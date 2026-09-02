@@ -1,0 +1,53 @@
+@model DiarioDoCoelho.Models.Post
+
+@{
+    ViewData["Title"] = Model.Titulo;
+}
+
+<!-- Slot AdSense Topo do Post -->
+
+<article>
+    <span class="badge bg-danger mb-2">@Model.Categoria?.Nome</span>
+    <h1 class="mb-2">@Model.Titulo</h1>
+    <p class="text-muted">
+        Publicado em @Model.DataPublicacao.ToString("dd/MM/yyyy HH:mm")
+        @if (!string.IsNullOrEmpty(Model.FonteNoticiaUrl))
+        {
+            <span> — Fonte: <a href="@Model.FonteNoticiaUrl" target="_blank" rel="nofollow noopener">acessar matéria original</a></span>
+        }
+    </p>
+
+    @if (!string.IsNullOrEmpty(Model.VideoEmbed))
+    {
+        <div class="ratio ratio-16x9 mb-4">
+            @Html.Raw(Model.VideoEmbed)
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(Model.ImagemCapa))
+    {
+        <img src="@Model.ImagemCapa" alt="@Model.Titulo" class="img-fluid rounded mb-4" />
+    }
+
+    <p class="lead">@Model.Resumo</p>
+
+    <!-- Slot AdSense Meio de Texto -->
+
+    <div class="post-conteudo">
+        @Html.Raw(Model.Conteudo)
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ProdutoAfiliadoUrl))
+    {
+        <div class="text-center my-4">
+            <a href="@Model.ProdutoAfiliadoUrl" target="_blank" rel="nofollow sponsored noopener" class="btn btn-lg btn-danger">
+                🐰 Garanta já o seu Manto!
+            </a>
+        </div>
+    }
+
+    <!-- Slot AdSense Rodapé do Post -->
+</article>
+
+<div class="mt-4">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">&larr; Voltar para a Home</a>
+</div>

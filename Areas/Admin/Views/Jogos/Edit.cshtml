@@ -1,0 +1,47 @@
+@model Jogo
+
+@{
+    ViewData["Title"] = "Editar Jogo";
+}
+
+<h1>Editar Jogo</h1>
+
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-3">
+        <label asp-for="DataHora" class="form-label"></label>
+        <input asp-for="DataHora" class="form-control" />
+        <span asp-validation-for="DataHora" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Adversario" class="form-label"></label>
+        <input asp-for="Adversario" class="form-control" />
+        <span asp-validation-for="Adversario" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Campeonato" class="form-label"></label>
+        <input asp-for="Campeonato" class="form-control" />
+        <span asp-validation-for="Campeonato" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="PlacarAmerica" class="form-label"></label>
+        <input asp-for="PlacarAmerica" class="form-control" />
+        <span asp-validation-for="PlacarAmerica" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="PlacarAdversario" class="form-label"></label>
+        <input asp-for="PlacarAdversario" class="form-control" />
+        <span asp-validation-for="PlacarAdversario" class="text-danger"></span>
+    </div>
+    <div class="form-check mb-3">
+        <input asp-for="Mandante" class="form-check-input" />
+        <label asp-for="Mandante" class="form-check-label"></label>
+    </div>
+    <button type="submit" class="btn btn-danger">Salvar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,31 @@
+@model List<DiarioDoCoelho.ViewModels.ProdutoAfiliadoViewModel>
+
+@{
+    ViewData["Title"] = "Loja do Coelho";
+}
+
+<h1 class="mb-1">Loja do Coelho</h1>
+<p class="text-muted mb-4">Produtos e mantos do América selecionados para o torcedor. Ao comprar pelos links abaixo, você apoia o Diário do Coelho sem pagar nada a mais por isso.</p>
+
+<!-- Slot AdSense Topo da Loja -->
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    @foreach (var produto in Model)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <img src="@produto.ImagemUrl" class="card-img-top" alt="@produto.Nome" style="object-fit:cover; height:220px;" />
+                <div class="card-body d-flex flex-column">
+                    <span class="badge bg-secondary align-self-start mb-2">@produto.Loja</span>
+                    <h5 class="card-title">@produto.Nome</h5>
+                    <p class="card-text text-muted flex-grow-1">@produto.Descricao</p>
+                    <a href="@produto.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="btn btn-danger mt-auto">
+                        Comprar na @produto.Loja
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Slot AdSense Rodapé da Loja -->

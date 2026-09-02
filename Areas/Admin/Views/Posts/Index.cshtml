@@ -1,0 +1,38 @@
+@model IEnumerable<Post>
+
+@{
+    ViewData["Title"] = "Notícias";
+}
+
+<h1>Notícias</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-danger">Nova Notícia</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Titulo)</th>
+            <th>Categoria</th>
+            <th>@Html.DisplayNameFor(model => model.DataPublicacao)</th>
+            <th>@Html.DisplayNameFor(model => model.Slug)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model)
+{
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Titulo)</td>
+            <td>@item.Categoria?.Nome</td>
+            <td>@item.DataPublicacao.ToString("dd/MM/yyyy HH:mm")</td>
+            <td>@Html.DisplayFor(modelItem => item.Slug)</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Detalhes</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Excluir</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,93 @@
+﻿@model DiarioDoCoelho.ViewModels.HomeIndexViewModel
+
+@{
+    ViewData["Title"] = "Início";
+}
+
+<!-- Slot AdSense Topo da Home -->
+
+@if (Model.ProximoJogo is not null)
+{
+    var jogo = Model.ProximoJogo;
+    <div class="card mb-4 border-danger">
+        <div class="card-body text-center">
+            <h5 class="card-title text-danger mb-1">Próximo Jogo do Coelho</h5>
+            <p class="mb-1 fw-bold">
+                @(jogo.Mandante ? "América" : jogo.Adversario)
+                x
+                @(jogo.Mandante ? jogo.Adversario : "América")
+            </p>
+            <p class="mb-0 text-muted">@jogo.Campeonato — @jogo.DataHora.ToString("dd/MM/yyyy HH:mm")</p>
+        </div>
+    </div>
+}
+
+@if (Model.BannersAtivos.Any())
+{
+    var bannerTopo = Model.BannersAtivos.FirstOrDefault(b => b.Posicao == "Topo");
+    if (bannerTopo is not null)
+    {
+        <a href="@bannerTopo.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="d-block mb-4 text-center">
+            <img src="@bannerTopo.ImagemUrl" alt="@bannerTopo.Titulo" class="img-fluid rounded" />
+        </a>
+    }
+}
+
+<div class="row">
+    <div class="col-12 col-lg-8">
+        <h2 class="mb-3">Últimas Notícias</h2>
+
+        @foreach (var post in Model.UltimosPosts)
+        {
+            <div class="card mb-3 shadow-sm">
+                <div class="row g-0">
+                    @if (!string.IsNullOrEmpty(post.ImagemCapa))
+                    {
+                        <div class="col-4 col-md-3">
+                            <img src="@post.ImagemCapa" alt="@post.Titulo" class="img-fluid rounded-start h-100" style="object-fit:cover;" />
+                        </div>
+                    }
+                    <div class="col-8 col-md-9">
+                        <div class="card-body">
+                            <span class="badge bg-danger mb-1">@post.Categoria?.Nome</span>
+                            <h5 class="card-title">
+                                <a asp-controller="Post" asp-action="Ler" asp-route-slug="@post.Slug" class="text-decoration-none text-dark">@post.Titulo</a>
+                            </h5>
+                            <p class="card-text text-muted small">@post.Resumo</p>
+                            <p class="card-text"><small class="text-muted">@post.DataPublicacao.ToString("dd/MM/yyyy")</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slot AdSense Meio de Texto (inserir a cada N posts, se desejar) -->
+        }
+
+        @if (!Model.UltimosPosts.Any())
+        {
+            <p class="text-muted">Nenhuma notícia publicada ainda.</p>
+        }
+    </div>
+
+    <div class="col-12 col-lg-4">
+        <!-- Slot AdSense Lateral -->
+
+        @{
+            var bannerLateral = Model.BannersAtivos.FirstOrDefault(b => b.Posicao == "Lateral");
+        }
+        @if (bannerLateral is not null)
+        {
+            <a href="@bannerLateral.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="d-block mb-4 text-center">
+                <img src="@bannerLateral.ImagemUrl" alt="@bannerLateral.Titulo" class="img-fluid rounded" />
+            </a>
+        }
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Loja do Coelho</h5>
+                <p class="card-text">Confira os produtos e mantos do América selecionados para você.</p>
+                <a asp-controller="Loja" asp-action="Index" class="btn btn-danger w-100">Ver Loja</a>
+            </div>
+        </div>
+    </div>
+</div>
