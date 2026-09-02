@@ -4,41 +4,45 @@
     ViewData["Title"] = "Novo Banner";
 }
 
-<h1>Novo Banner Afiliado</h1>
+<h1 class="mb-4"><i class="fa-solid fa-rectangle-ad text-coelho-verde"></i> Novo Banner Afiliado</h1>
 
-<form asp-action="Create">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="mb-3">
-        <label asp-for="Titulo" class="form-label"></label>
-        <input asp-for="Titulo" class="form-control" />
-        <span asp-validation-for="Titulo" class="text-danger"></span>
+<div class="card admin-card">
+    <div class="card-body">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="mb-3">
+                <label asp-for="Titulo" class="form-label"></label>
+                <input asp-for="Titulo" class="form-control" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ImagemUrl" class="form-label"></label>
+                <input asp-for="ImagemUrl" class="form-control" />
+                <span asp-validation-for="ImagemUrl" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="LinkAfiliado" class="form-label"></label>
+                <input asp-for="LinkAfiliado" class="form-control" />
+                <span asp-validation-for="LinkAfiliado" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Posicao" class="form-label"></label>
+                <select asp-for="Posicao" class="form-select">
+                    <option value="Topo">Topo</option>
+                    <option value="Lateral">Lateral</option>
+                    <option value="MeioTexto">Meio Texto</option>
+                </select>
+                <span asp-validation-for="Posicao" class="text-danger"></span>
+            </div>
+            <div class="form-check mb-3">
+                <input asp-for="Ativo" class="form-check-input" />
+                <label asp-for="Ativo" class="form-check-label"></label>
+            </div>
+            <button type="submit" class="btn btn-coelho-primary"><i class="fa-solid fa-floppy-disk"></i> Salvar</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </form>
     </div>
-    <div class="mb-3">
-        <label asp-for="ImagemUrl" class="form-label"></label>
-        <input asp-for="ImagemUrl" class="form-control" />
-        <span asp-validation-for="ImagemUrl" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="LinkAfiliado" class="form-label"></label>
-        <input asp-for="LinkAfiliado" class="form-control" />
-        <span asp-validation-for="LinkAfiliado" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Posicao" class="form-label"></label>
-        <select asp-for="Posicao" class="form-select">
-            <option value="Topo">Topo</option>
-            <option value="Lateral">Lateral</option>
-            <option value="MeioTexto">Meio Texto</option>
-        </select>
-        <span asp-validation-for="Posicao" class="text-danger"></span>
-    </div>
-    <div class="form-check mb-3">
-        <input asp-for="Ativo" class="form-check-input" />
-        <label asp-for="Ativo" class="form-check-label"></label>
-    </div>
-    <button type="submit" class="btn btn-danger">Salvar</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-</form>
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

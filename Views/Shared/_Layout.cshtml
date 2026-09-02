@@ -5,34 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Diário do Coelho</title>
     <script type="importmap"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DiarioDoCoelho.styles.css" asp-append-version="true" />
+    <link rel="icon" href="~/favicon.ico" />
 
     <!-- Slot AdSense Head (script principal do Google AdSense, ex: <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXX" crossorigin="anonymous"></script>) -->
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-danger border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark coelho-navbar">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">🐰 Diário do Coelho</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/img/afc-escudos-site-branco-1.png" alt="Escudo do América" />
+                    Diário do Coelho
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Início</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Início</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Loja" asp-action="Index">Loja do Coelho</a>
+                            <a class="nav-link" asp-area="" asp-controller="Post" asp-action="Index">Notícias</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Loja" asp-action="Index">Loja do Coelho</a>
                         </li>
                     </ul>
-                    <partial name="_LoginPartial" />
+                    <partial name="_SocialLinks" />
                 </div>
             </div>
         </nav>
+        <div class="coelho-navbar-accent"></div>
     </header>
 
     <!-- Slot AdSense Topo -->
@@ -45,10 +58,21 @@
 
     <!-- Slot AdSense Rodapé -->
 
-    <footer class="border-top footer text-muted mt-4">
-        <div class="container py-3">
-            &copy; 2026 - Diário do Coelho - Notícias, opinião e produtos do América. Não possui vínculo oficial com o clube.
-            <a asp-area="" asp-controller="Home" asp-action="Privacy">Política de Privacidade</a>
+    <footer class="coelho-footer">
+        <div class="container py-4 d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <img src="~/img/afc-escudos-site-branco-1.png" alt="Escudo do América" height="28" />
+                <span>&copy; 2026 - Diário do Coelho — Notícias, opinião e produtos do América.</span>
+            </div>
+            <div>
+                <small>Não possui vínculo oficial com o clube.</small>
+                &middot;
+                <a asp-area="" asp-controller="Home" asp-action="Privacy">Política de Privacidade</a>
+                &middot;
+                <a asp-area="" asp-controller="Home" asp-action="Termos">Termos de Uso</a>
+                &middot;
+                <a asp-area="" asp-controller="Home" asp-action="Contato">Contato</a>
+            </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

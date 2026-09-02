@@ -4,6 +4,7 @@ namespace DiarioDoCoelho.ViewModels
 {
     public class HomeIndexViewModel
     {
+        public Post? PostDestaque { get; set; }
         public List<Post> UltimosPosts { get; set; } = new();
         public Jogo? ProximoJogo { get; set; }
         public List<BannerAfiliado> BannersAtivos { get; set; } = new();

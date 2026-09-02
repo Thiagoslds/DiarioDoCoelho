@@ -4,31 +4,35 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Admin - Diário do Coelho</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin-theme.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark admin-navbar">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="Admin" asp-controller="Categorias" asp-action="Index">Admin - Diário do Coelho</a>
+                <a class="navbar-brand" asp-area="Admin" asp-controller="Home" asp-action="Index">
+                    <i class="fa-solid fa-gauge"></i> Admin - Diário do Coelho
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="Posts" asp-action="Index">Notícias</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="Categorias" asp-action="Index">Categorias</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="Jogos" asp-action="Index">Jogos</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="Admin" asp-controller="BannersAfiliados" asp-action="Index">Banners</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Ver Site</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="Admin" asp-controller="Posts" asp-action="Index"><i class="fa-solid fa-newspaper"></i> Notícias</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="Admin" asp-controller="Categorias" asp-action="Index"><i class="fa-solid fa-tags"></i> Categorias</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="Admin" asp-controller="Jogos" asp-action="Index"><i class="fa-solid fa-futbol"></i> Jogos</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="Admin" asp-controller="BannersAfiliados" asp-action="Index"><i class="fa-solid fa-rectangle-ad"></i> Banners</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Site</a></li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container py-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

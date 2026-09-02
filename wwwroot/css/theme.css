@@ -1,0 +1,455 @@
+/* =========================================================
+   Diário do Coelho — Design System
+   Cores institucionais do América Futebol Clube
+   ========================================================= */
+
+:root {
+  --coelho-verde: #007242;
+  --coelho-verde-retro: #006148;
+  --coelho-verde-escuro: #004d2c;
+  --coelho-vermelho: #d2232c;
+  --coelho-amarelo: #ffcb05;
+  --coelho-bege: #f3dfd1;
+  --coelho-vinho: #a62f4e;
+
+  --coelho-texto: #1b1b1b;
+  --coelho-texto-claro: #6c757d;
+  --coelho-fundo: #f7f6f4;
+  --coelho-branco: #ffffff;
+
+  --coelho-radius: 14px;
+  --coelho-radius-sm: 8px;
+  --coelho-shadow: 0 6px 24px rgba(0, 40, 25, 0.08);
+  --coelho-shadow-hover: 0 12px 32px rgba(0, 40, 25, 0.16);
+
+  --coelho-font: "Poppins", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+/* =====================
+   Base
+   ===================== */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--coelho-font);
+  background-color: var(--coelho-fundo);
+  color: var(--coelho-texto);
+  margin-bottom: 0 !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--coelho-font);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: var(--coelho-verde);
+}
+
+a:hover {
+  color: var(--coelho-verde-retro);
+}
+
+::selection {
+  background: var(--coelho-verde);
+  color: var(--coelho-branco);
+}
+
+/* =====================
+   Navbar
+   ===================== */
+.coelho-navbar {
+  background: linear-gradient(135deg, var(--coelho-verde) 0%, var(--coelho-verde-retro) 100%);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+}
+
+.coelho-navbar .navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--coelho-branco) !important;
+}
+
+.coelho-navbar .navbar-brand img {
+  height: 42px;
+  width: auto;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.coelho-navbar .nav-link {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-weight: 500;
+  padding: 0.5rem 1rem !important;
+  border-radius: var(--coelho-radius-sm);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.coelho-navbar .nav-link:hover,
+.coelho-navbar .nav-link.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: var(--coelho-branco) !important;
+}
+
+.coelho-navbar .btn-link.nav-link {
+  text-decoration: none;
+}
+
+.coelho-navbar-accent {
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--coelho-amarelo), var(--coelho-vermelho), var(--coelho-vinho));
+}
+
+.coelho-social-links {
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.coelho-social-links .nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  padding: 0 !important;
+  font-size: 1.15rem;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.coelho-social-links .nav-link:hover {
+  background-color: var(--coelho-amarelo);
+  color: var(--coelho-verde-escuro) !important;
+}
+
+/* =====================
+   Hero
+   ===================== */
+.coelho-hero {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(120% 140% at 100% 0%, var(--coelho-verde-retro) 0%, var(--coelho-verde) 45%, var(--coelho-verde-escuro) 100%);
+  color: var(--coelho-branco);
+  border-radius: var(--coelho-radius);
+  padding: 2.5rem 2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--coelho-shadow);
+}
+
+.coelho-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 85% 20%, rgba(255, 203, 5, 0.18), transparent 45%);
+  pointer-events: none;
+}
+
+.coelho-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: var(--coelho-amarelo);
+  color: #3a2b00;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 0.85rem;
+  border-radius: 50px;
+  margin-bottom: 0.75rem;
+}
+
+.coelho-hero h1 {
+  font-size: clamp(1.75rem, 3vw, 2.6rem);
+  margin-bottom: 0.5rem;
+}
+
+.coelho-hero p {
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 640px;
+}
+
+.coelho-hero-jogador {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  max-height: 260px;
+  object-fit: contain;
+  object-position: bottom right;
+  opacity: 0.95;
+  pointer-events: none;
+}
+
+/* =====================
+   Cards de Notícia
+   ===================== */
+.coelho-card {
+  border: none;
+  border-radius: var(--coelho-radius);
+  overflow: hidden;
+  background: var(--coelho-branco);
+  box-shadow: var(--coelho-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.coelho-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--coelho-shadow-hover);
+}
+
+.coelho-card-img {
+  object-fit: cover;
+  height: 100%;
+  min-height: 140px;
+  width: 100%;
+}
+
+.coelho-card .card-title a {
+  color: var(--coelho-texto);
+  font-weight: 600;
+}
+
+.coelho-card .card-title a:hover {
+  color: var(--coelho-verde);
+}
+
+.coelho-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.3rem 0.65rem;
+  border-radius: 50px;
+  color: var(--coelho-branco);
+  background-color: var(--coelho-verde);
+}
+
+/* Variações de badge por categoria, aplicadas via data-categoria no elemento */
+.coelho-badge[data-cor="verde"] { background-color: var(--coelho-verde); }
+.coelho-badge[data-cor="retro"] { background-color: var(--coelho-verde-retro); }
+.coelho-badge[data-cor="vermelho"] { background-color: var(--coelho-vermelho); }
+.coelho-badge[data-cor="vinho"] { background-color: var(--coelho-vinho); }
+.coelho-badge[data-cor="amarelo"] { background-color: var(--coelho-amarelo); color: #3a2b00; }
+
+/* =====================
+   Sidebar / Destaques
+   ===================== */
+.coelho-sidebar-card {
+  border: none;
+  border-radius: var(--coelho-radius);
+  box-shadow: var(--coelho-shadow);
+  overflow: hidden;
+}
+
+.coelho-sidebar-card .card-header {
+  background: var(--coelho-verde);
+  color: var(--coelho-branco);
+  font-weight: 700;
+  border: none;
+  padding: 0.85rem 1.25rem;
+}
+
+.coelho-loja-banner {
+  background: linear-gradient(160deg, var(--coelho-vinho), var(--coelho-vermelho));
+  color: var(--coelho-branco);
+  border-radius: var(--coelho-radius);
+  overflow: hidden;
+  box-shadow: var(--coelho-shadow);
+  position: relative;
+}
+
+.coelho-loja-banner img {
+  height: 180px;
+  object-fit: cover;
+  width: 100%;
+  opacity: 0.85;
+}
+
+.coelho-loja-banner .card-body {
+  position: relative;
+  z-index: 2;
+}
+
+.btn-coelho-primary {
+  background-color: var(--coelho-verde);
+  border-color: var(--coelho-verde);
+  color: var(--coelho-branco);
+  font-weight: 600;
+  border-radius: var(--coelho-radius-sm);
+}
+
+.btn-coelho-primary:hover {
+  background-color: var(--coelho-verde-retro);
+  border-color: var(--coelho-verde-retro);
+  color: var(--coelho-branco);
+}
+
+.btn-coelho-outline {
+  background-color: transparent;
+  border: 2px solid var(--coelho-branco);
+  color: var(--coelho-branco);
+  font-weight: 600;
+  border-radius: var(--coelho-radius-sm);
+}
+
+.btn-coelho-outline:hover {
+  background-color: var(--coelho-branco);
+  color: var(--coelho-verde);
+}
+
+/* =====================
+   Próximo Jogo
+   ===================== */
+.coelho-proximo-jogo {
+  border: none;
+  border-radius: var(--coelho-radius);
+  background: var(--coelho-branco);
+  box-shadow: var(--coelho-shadow);
+  border-left: 5px solid var(--coelho-amarelo);
+}
+
+.coelho-proximo-jogo .badge {
+  background-color: var(--coelho-vinho);
+}
+
+/* =====================
+   Footer
+   ===================== */
+.coelho-footer {
+  background: linear-gradient(135deg, var(--coelho-verde-escuro), var(--coelho-verde-retro));
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 3rem;
+}
+
+.coelho-footer a {
+  color: var(--coelho-amarelo);
+  text-decoration: none;
+}
+
+.coelho-footer a:hover {
+  text-decoration: underline;
+}
+
+/* =====================
+   Manchete Principal
+   ===================== */
+.coelho-manchete {
+  position: relative;
+  display: block;
+  min-height: 380px;
+  border-radius: var(--coelho-radius);
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  margin-top: 1.5rem;
+  box-shadow: var(--coelho-shadow);
+  color: var(--coelho-branco);
+}
+
+.coelho-manchete::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(0, 20, 12, 0.92) 0%, rgba(0, 20, 12, 0.55) 45%, rgba(0, 20, 12, 0.1) 100%);
+}
+
+.coelho-manchete-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: 2rem;
+}
+
+.coelho-manchete-titulo {
+  font-size: clamp(1.5rem, 3.2vw, 2.5rem);
+  color: var(--coelho-branco);
+  margin-bottom: 0.6rem;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.coelho-manchete-resumo {
+  max-width: 700px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.75rem;
+}
+
+.coelho-manchete-cta {
+  display: inline-block;
+  font-weight: 700;
+  color: var(--coelho-amarelo);
+}
+
+.coelho-manchete:hover .coelho-manchete-titulo {
+  text-decoration: underline;
+}
+
+@media (max-width: 767.98px) {
+  .coelho-manchete {
+    min-height: 280px;
+  }
+}
+
+/* =====================
+   Placar / Escudos
+   ===================== */
+.coelho-placar-escudo {
+  height: 56px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.15));
+}
+
+.coelho-partida-escudo {
+  height: 96px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.15));
+}
+
+.coelho-escudo-generico {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  width: 56px;
+  border-radius: 50%;
+  background-color: var(--coelho-bege);
+  color: var(--coelho-vinho);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.coelho-escudo-generico-sm {
+  height: 48px;
+  width: 48px;
+  font-size: 0.75rem;
+}
+
+.coelho-escudo-generico-lg {
+  height: 96px;
+  width: 96px;
+  font-size: 1.1rem;
+}
+
+/* =====================
+   Utilidades
+   ===================== */
+.text-coelho-verde { color: var(--coelho-verde) !important; }
+.text-coelho-amarelo { color: var(--coelho-amarelo) !important; }
+.bg-coelho-bege { background-color: var(--coelho-bege) !important; }
+
+@media (max-width: 767.98px) {
+  .coelho-hero-jogador {
+    display: none;
+  }
+}

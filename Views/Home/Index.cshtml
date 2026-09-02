@@ -2,22 +2,82 @@
 
 @{
     ViewData["Title"] = "Início";
+
+    string CorCategoria(string? nome) => nome switch
+    {
+        "Últimas Notícias" => "verde",
+        "Mercado da Bola" => "vermelho",
+        "Análise & Opinião" => "vinho",
+        "DNA Formador" => "retro",
+        _ => "verde"
+    };
 }
 
 <!-- Slot AdSense Topo da Home -->
 
+@if (Model.PostDestaque is not null)
+{
+    var destaque = Model.PostDestaque;
+    var imagemFundo = string.IsNullOrEmpty(destaque.ImagemCapa) ? "/img/jogador.jpg" : destaque.ImagemCapa;
+
+    <a asp-controller="Post" asp-action="Ler" asp-route-slug="@destaque.Slug" class="coelho-manchete d-block text-decoration-none mb-4" style="background-image: url('@imagemFundo');">
+        <div class="coelho-manchete-overlay">
+            <span class="coelho-badge mb-2" data-cor="@CorCategoria(destaque.Categoria?.Nome)">@destaque.Categoria?.Nome</span>
+            <h1 class="coelho-manchete-titulo">@destaque.Titulo</h1>
+            <p class="coelho-manchete-resumo d-none d-md-block">@destaque.Resumo</p>
+            <span class="coelho-manchete-cta">Leia a matéria completa &rarr;</span>
+        </div>
+    </a>
+}
+else
+{
+    <section class="coelho-hero">
+        <span class="coelho-hero-badge">🐰 Diário do Coelho</span>
+        <h1>Tudo sobre o América em um só lugar</h1>
+        <p>Notícias, bastidores, mercado da bola e opinião sobre o Coelho — a paixão alviverde direto pra você.</p>
+        <img src="~/img/jogador.jpg" alt="Jogador do América" class="coelho-hero-jogador" />
+    </section>
+}
+
 @if (Model.ProximoJogo is not null)
 {
     var jogo = Model.ProximoJogo;
-    <div class="card mb-4 border-danger">
-        <div class="card-body text-center">
-            <h5 class="card-title text-danger mb-1">Próximo Jogo do Coelho</h5>
-            <p class="mb-1 fw-bold">
-                @(jogo.Mandante ? "América" : jogo.Adversario)
-                x
-                @(jogo.Mandante ? jogo.Adversario : "América")
-            </p>
-            <p class="mb-0 text-muted">@jogo.Campeonato — @jogo.DataHora.ToString("dd/MM/yyyy HH:mm")</p>
+    <div class="card coelho-proximo-jogo mb-4">
+        <div class="card-body text-center py-4">
+            <span class="badge mb-3">Próximo Jogo do Coelho</span>
+            <div class="row align-items-center justify-content-center g-3">
+                <div class="col-3 col-md-2 text-end">
+                    @if (jogo.Mandante)
+                    {
+                        <img src="~/img/afc-escudos-site-branco-1.png" alt="Escudo do América" class="coelho-placar-escudo" />
+                    }
+                    else
+                    {
+                        <div class="coelho-escudo-generico coelho-escudo-generico-sm mx-auto">@jogo.Adversario.Substring(0, Math.Min(3, jogo.Adversario.Length)).ToUpper()</div>
+                    }
+                </div>
+                <div class="col-4 col-md-3">
+                    <p class="mb-0 fw-bold fs-5">
+                        @(jogo.Mandante ? "América" : jogo.Adversario)
+                        <span class="text-muted fw-normal">x</span>
+                        @(jogo.Mandante ? jogo.Adversario : "América")
+                    </p>
+                    <p class="mb-0 text-muted small">@jogo.Campeonato — @jogo.DataHora.ToString("dd/MM/yyyy 'às' HH:mm")</p>
+                </div>
+                <div class="col-3 col-md-2 text-start">
+                    @if (!jogo.Mandante)
+                    {
+                        <img src="~/img/afc-escudos-site-branco-1.png" alt="Escudo do América" class="coelho-placar-escudo" />
+                    }
+                    else
+                    {
+                        <div class="coelho-escudo-generico coelho-escudo-generico-sm mx-auto">@jogo.Adversario.Substring(0, Math.Min(3, jogo.Adversario.Length)).ToUpper()</div>
+                    }
+                </div>
+            </div>
+            <a asp-controller="Jogos" asp-action="Detalhes" asp-route-id="@jogo.Id" class="d-inline-block mt-3 small fw-semibold text-coelho-verde">
+                Saiba mais sobre a partida &rarr;
+            </a>
         </div>
     </div>
 }
@@ -33,25 +93,26 @@
     }
 }
 
+
 <div class="row">
     <div class="col-12 col-lg-8">
-        <h2 class="mb-3">Últimas Notícias</h2>
+        <h2 class="mb-3 text-coelho-verde">Últimas Notícias</h2>
 
         @foreach (var post in Model.UltimosPosts)
         {
-            <div class="card mb-3 shadow-sm">
+            <div class="card coelho-card mb-3">
                 <div class="row g-0">
                     @if (!string.IsNullOrEmpty(post.ImagemCapa))
                     {
                         <div class="col-4 col-md-3">
-                            <img src="@post.ImagemCapa" alt="@post.Titulo" class="img-fluid rounded-start h-100" style="object-fit:cover;" />
+                            <img src="@post.ImagemCapa" alt="@post.Titulo" class="coelho-card-img" />
                         </div>
                     }
                     <div class="col-8 col-md-9">
                         <div class="card-body">
-                            <span class="badge bg-danger mb-1">@post.Categoria?.Nome</span>
+                            <span class="coelho-badge mb-2" data-cor="@CorCategoria(post.Categoria?.Nome)">@post.Categoria?.Nome</span>
                             <h5 class="card-title">
-                                <a asp-controller="Post" asp-action="Ler" asp-route-slug="@post.Slug" class="text-decoration-none text-dark">@post.Titulo</a>
+                                <a asp-controller="Post" asp-action="Ler" asp-route-slug="@post.Slug" class="text-decoration-none">@post.Titulo</a>
                             </h5>
                             <p class="card-text text-muted small">@post.Resumo</p>
                             <p class="card-text"><small class="text-muted">@post.DataPublicacao.ToString("dd/MM/yyyy")</small></p>
@@ -82,11 +143,19 @@
             </a>
         }
 
-        <div class="card mb-4">
+        <div class="card coelho-loja-banner mb-4">
+            <img src="~/img/camisa.jpg" alt="Camisa do América" />
             <div class="card-body">
                 <h5 class="card-title">Loja do Coelho</h5>
                 <p class="card-text">Confira os produtos e mantos do América selecionados para você.</p>
-                <a asp-controller="Loja" asp-action="Index" class="btn btn-danger w-100">Ver Loja</a>
+                <a asp-controller="Loja" asp-action="Index" class="btn btn-coelho-outline w-100">Ver Loja</a>
+            </div>
+        </div>
+
+        <div class="card coelho-sidebar-card mb-4">
+            <div class="card-header">Escudo Retrô</div>
+            <div class="card-body text-center bg-coelho-bege">
+                <img src="~/img/Logo-America-VERDE-LIMPA.png" alt="Escudo América" style="max-height:160px;" class="img-fluid" />
             </div>
         </div>
     </div>

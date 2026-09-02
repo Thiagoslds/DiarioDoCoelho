@@ -1,0 +1,43 @@
+@model List<DiarioDoCoelho.Models.Post>
+
+@{
+    ViewData["Title"] = "Notícias";
+
+    string CorCategoria(string? nome) => nome switch
+    {
+        "Últimas Notícias" => "verde",
+        "Mercado da Bola" => "vermelho",
+        "Análise & Opinião" => "vinho",
+        "DNA Formador" => "retro",
+        _ => "verde"
+    };
+}
+
+<h1 class="mb-4 text-coelho-verde">Notícias</h1>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Nenhuma notícia publicada ainda.</p>
+}
+
+<div class="row">
+    @foreach (var post in Model)
+    {
+        <div class="col-12 col-md-6 mb-4">
+            <div class="card coelho-card h-100">
+                @if (!string.IsNullOrEmpty(post.ImagemCapa))
+                {
+                    <img src="@post.ImagemCapa" alt="@post.Titulo" class="coelho-card-img" style="height:200px;" />
+                }
+                <div class="card-body">
+                    <span class="coelho-badge mb-2" data-cor="@CorCategoria(post.Categoria?.Nome)">@post.Categoria?.Nome</span>
+                    <h5 class="card-title">
+                        <a asp-controller="Post" asp-action="Ler" asp-route-slug="@post.Slug" class="text-decoration-none">@post.Titulo</a>
+                    </h5>
+                    <p class="card-text text-muted small">@post.Resumo</p>
+                    <p class="card-text"><small class="text-muted">@post.DataPublicacao.ToString("dd/MM/yyyy")</small></p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -16,8 +16,11 @@ public class HomeController(ApplicationDbContext context) : Controller
         var ultimosPosts = await _context.Posts
             .Include(p => p.Categoria)
             .OrderByDescending(p => p.DataPublicacao)
-            .Take(10)
+            .Take(11)
             .ToListAsync();
+
+        var postDestaque = ultimosPosts.FirstOrDefault();
+        var restantePosts = ultimosPosts.Skip(1).ToList();
 
         var proximoJogo = await _context.Jogos
             .Where(j => j.DataHora >= DateTime.Now)
@@ -30,7 +33,8 @@ public class HomeController(ApplicationDbContext context) : Controller
 
         var viewModel = new HomeIndexViewModel
         {
-            UltimosPosts = ultimosPosts,
+            PostDestaque = postDestaque,
+            UltimosPosts = restantePosts,
             ProximoJogo = proximoJogo,
             BannersAtivos = bannersAtivos
         };
@@ -39,6 +43,16 @@ public class HomeController(ApplicationDbContext context) : Controller
     }
 
     public IActionResult Privacy()
+    {
+        return View();
+    }
+
+    public IActionResult Termos()
+    {
+        return View();
+    }
+
+    public IActionResult Contato()
     {
         return View();
     }

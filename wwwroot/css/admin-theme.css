@@ -1,0 +1,152 @@
+/* =========================================================
+   Diário do Coelho — Tema do Painel Administrativo
+   ========================================================= */
+
+:root {
+  --coelho-verde: #007242;
+  --coelho-verde-retro: #006148;
+  --coelho-verde-escuro: #004d2c;
+  --coelho-vermelho: #d2232c;
+  --coelho-amarelo: #ffcb05;
+  --coelho-bege: #f3dfd1;
+  --coelho-vinho: #a62f4e;
+
+  --coelho-radius: 14px;
+  --coelho-radius-sm: 8px;
+  --coelho-shadow: 0 6px 24px rgba(0, 40, 25, 0.08);
+}
+
+body {
+  background-color: #f4f6f5;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+/* Navbar */
+.admin-navbar {
+  background: linear-gradient(135deg, var(--coelho-verde) 0%, var(--coelho-verde-retro) 100%);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+}
+
+.admin-navbar .navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: #fff !important;
+}
+
+.admin-navbar .nav-link {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: var(--coelho-radius-sm);
+  padding: 0.5rem 0.85rem !important;
+  transition: background-color 0.2s ease;
+}
+
+.admin-navbar .nav-link:hover,
+.admin-navbar .nav-link.active {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.admin-navbar .btn-link.nav-link {
+  text-decoration: none;
+}
+
+/* Dashboard cards */
+.admin-dashboard-card {
+  border: none;
+  border-radius: var(--coelho-radius);
+  box-shadow: var(--coelho-shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  height: 100%;
+}
+
+.admin-dashboard-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 40, 25, 0.16);
+}
+
+.admin-dashboard-icon {
+  height: 52px;
+  width: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.admin-dashboard-icon.bg-verde { background-color: var(--coelho-verde); }
+.admin-dashboard-icon.bg-vermelho { background-color: var(--coelho-vermelho); }
+.admin-dashboard-icon.bg-amarelo { background-color: var(--coelho-amarelo); color: #3a2b00; }
+.admin-dashboard-icon.bg-vinho { background-color: var(--coelho-vinho); }
+
+.text-coelho-verde { color: var(--coelho-verde) !important; }
+.text-coelho-vermelho { color: var(--coelho-vermelho) !important; }
+
+.admin-dashboard-count {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--coelho-verde);
+}
+
+/* Botões */
+.btn-coelho-primary {
+  background-color: var(--coelho-verde);
+  border-color: var(--coelho-verde);
+  color: #fff;
+  font-weight: 600;
+  border-radius: var(--coelho-radius-sm);
+}
+
+.btn-coelho-primary:hover {
+  background-color: var(--coelho-verde-retro);
+  border-color: var(--coelho-verde-retro);
+  color: #fff;
+}
+
+.btn-coelho-outline-danger {
+  color: var(--coelho-vermelho);
+  border: 1px solid var(--coelho-vermelho);
+  background: transparent;
+  border-radius: var(--coelho-radius-sm);
+}
+
+.btn-coelho-outline-danger:hover {
+  background-color: var(--coelho-vermelho);
+  color: #fff;
+}
+
+/* Cards de formulário e tabela */
+.admin-card {
+  border: none;
+  border-radius: var(--coelho-radius);
+  box-shadow: var(--coelho-shadow);
+}
+
+.admin-table thead {
+  background-color: var(--coelho-bege);
+}
+
+.admin-table th {
+  color: var(--coelho-verde-escuro);
+  font-weight: 700;
+}
+
+/* Editor WYSIWYG (Quill) */
+.ql-toolbar.ql-snow {
+  border-radius: var(--coelho-radius-sm) var(--coelho-radius-sm) 0 0;
+  background-color: #fafafa;
+}
+
+.ql-container.ql-snow {
+  border-radius: 0 0 var(--coelho-radius-sm) var(--coelho-radius-sm);
+  min-height: 260px;
+  font-size: 1rem;
+  background-color: #fff;
+}

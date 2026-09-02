@@ -4,33 +4,37 @@
     ViewData["Title"] = "Banners Afiliados";
 }
 
-<h1>Banners Afiliados</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0"><i class="fa-solid fa-rectangle-ad text-coelho-verde"></i> Banners Afiliados</h1>
+    <a asp-action="Create" class="btn btn-coelho-primary"><i class="fa-solid fa-plus"></i> Novo Banner</a>
+</div>
 
-<p>
-    <a asp-action="Create" class="btn btn-danger">Novo Banner</a>
-</p>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Titulo)</th>
-            <th>@Html.DisplayNameFor(model => model.Posicao)</th>
-            <th>@Html.DisplayNameFor(model => model.Ativo)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model)
-{
-        <tr>
-            <td>@Html.DisplayFor(modelItem => item.Titulo)</td>
-            <td>@Html.DisplayFor(modelItem => item.Posicao)</td>
-            <td>@(item.Ativo ? "Sim" : "Não")</td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Detalhes</a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Excluir</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="card admin-card">
+    <div class="card-body">
+        <table class="table table-striped admin-table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Titulo)</th>
+                    <th>@Html.DisplayNameFor(model => model.Posicao)</th>
+                    <th>@Html.DisplayNameFor(model => model.Ativo)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var item in Model)
+        {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Titulo)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Posicao)</td>
+                    <td>@(item.Ativo ? "Sim" : "Não")</td>
+                    <td class="text-end">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary" title="Editar"><i class="fa-solid fa-pen"></i></a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary" title="Detalhes"><i class="fa-solid fa-eye"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-coelho-outline-danger" title="Excluir"><i class="fa-solid fa-trash"></i></a>
+                    </td>
+                </tr>
+        }
+            </tbody>
+        </table>
+    </div>
+</div>

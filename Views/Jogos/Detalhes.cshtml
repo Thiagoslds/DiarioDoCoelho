@@ -1,0 +1,66 @@
+@model DiarioDoCoelho.Models.Jogo
+
+@{
+    ViewData["Title"] = "Detalhes da Partida";
+    var mandanteNome = Model.Mandante ? "América" : Model.Adversario;
+    var visitanteNome = Model.Mandante ? Model.Adversario : "América";
+}
+
+<div class="coelho-partida-header text-center mb-4">
+    <span class="coelho-hero-badge mb-3">@Model.Campeonato</span>
+    <div class="row align-items-center justify-content-center g-4 mt-2">
+        <div class="col-4 text-center">
+            @if (Model.Mandante)
+            {
+                <img src="~/img/afc-escudos-site-branco-1.png" alt="Escudo do América" class="coelho-partida-escudo" />
+            }
+            else
+            {
+                <div class="coelho-escudo-generico coelho-escudo-generico-lg mx-auto">@Model.Adversario.Substring(0, Math.Min(3, Model.Adversario.Length)).ToUpper()</div>
+            }
+            <p class="fw-bold mt-2 mb-0">@mandanteNome</p>
+        </div>
+        <div class="col-2">
+            <span class="fs-3 fw-bold text-coelho-verde">
+                @if (Model.PlacarAmerica is not null && Model.PlacarAdversario is not null)
+                {
+                    @($"{(Model.Mandante ? Model.PlacarAmerica : Model.PlacarAdversario)} x {(Model.Mandante ? Model.PlacarAdversario : Model.PlacarAmerica)}")
+                }
+                else
+                {
+                    @:x
+                }
+            </span>
+        </div>
+        <div class="col-4 text-center">
+            @if (!Model.Mandante)
+            {
+                <img src="~/img/afc-escudos-site-branco-1.png" alt="Escudo do América" class="coelho-partida-escudo" />
+            }
+            else
+            {
+                <div class="coelho-escudo-generico coelho-escudo-generico-lg mx-auto">@Model.Adversario.Substring(0, Math.Min(3, Model.Adversario.Length)).ToUpper()</div>
+            }
+            <p class="fw-bold mt-2 mb-0">@visitanteNome</p>
+        </div>
+    </div>
+</div>
+
+<div class="card coelho-card mb-4">
+    <div class="card-body">
+        <h5 class="card-title text-coelho-verde">Informações da Partida</h5>
+        <ul class="list-unstyled mb-0">
+            <li class="mb-2"><strong>Data e Hora:</strong> @Model.DataHora.ToString("dd/MM/yyyy 'às' HH:mm")</li>
+            <li class="mb-2"><strong>Campeonato:</strong> @Model.Campeonato</li>
+            <li class="mb-2"><strong>Mando de campo:</strong> @(Model.Mandante ? "América (casa)" : $"{Model.Adversario} (fora)")</li>
+            @if (Model.PlacarAmerica is not null && Model.PlacarAdversario is not null)
+            {
+                <li class="mb-2"><strong>Resultado:</strong> América @Model.PlacarAmerica x @Model.PlacarAdversario @Model.Adversario</li>
+            }
+        </ul>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">&larr; Voltar para a Home</a>
+</div>

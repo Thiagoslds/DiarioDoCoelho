@@ -1,0 +1,128 @@
+@model DiarioDoCoelho.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Painel";
+}
+
+<h1 class="mb-4">Painel Administrativo</h1>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <a asp-controller="Posts" asp-action="Index" class="text-decoration-none">
+            <div class="card admin-dashboard-card">
+                <div class="card-body">
+                    <div class="admin-dashboard-icon bg-verde"><i class="fa-solid fa-newspaper"></i></div>
+                    <div class="admin-dashboard-count">@Model.TotalPosts</div>
+                    <div class="text-muted">Notícias</div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-lg-3">
+        <a asp-controller="Categorias" asp-action="Index" class="text-decoration-none">
+            <div class="card admin-dashboard-card">
+                <div class="card-body">
+                    <div class="admin-dashboard-icon bg-amarelo"><i class="fa-solid fa-tags"></i></div>
+                    <div class="admin-dashboard-count">@Model.TotalCategorias</div>
+                    <div class="text-muted">Categorias</div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-lg-3">
+        <a asp-controller="Jogos" asp-action="Index" class="text-decoration-none">
+            <div class="card admin-dashboard-card">
+                <div class="card-body">
+                    <div class="admin-dashboard-icon bg-vinho"><i class="fa-solid fa-futbol"></i></div>
+                    <div class="admin-dashboard-count">@Model.TotalJogos</div>
+                    <div class="text-muted">Jogos</div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-lg-3">
+        <a asp-controller="BannersAfiliados" asp-action="Index" class="text-decoration-none">
+            <div class="card admin-dashboard-card">
+                <div class="card-body">
+                    <div class="admin-dashboard-icon bg-vermelho"><i class="fa-solid fa-rectangle-ad"></i></div>
+                    <div class="admin-dashboard-count">@Model.TotalBanners</div>
+                    <div class="text-muted">Banners</div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-12 col-lg-7">
+        <div class="card admin-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0"><i class="fa-solid fa-newspaper text-coelho-verde"></i> Últimas Notícias</h5>
+                    <a asp-controller="Posts" asp-action="Create" class="btn btn-coelho-primary btn-sm">
+                        <i class="fa-solid fa-plus"></i> Nova Notícia
+                    </a>
+                </div>
+                @if (Model.UltimosPosts.Any())
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var post in Model.UltimosPosts)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div>
+                                    <strong>@post.Titulo</strong>
+                                    <div class="text-muted small">@post.Categoria?.Nome — @post.DataPublicacao.ToString("dd/MM/yyyy")</div>
+                                </div>
+                                <a asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted">Nenhuma notícia cadastrada ainda.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-5">
+        <div class="card admin-card mb-3">
+            <div class="card-body">
+                <h5 class="card-title mb-3"><i class="fa-solid fa-futbol text-coelho-verde"></i> Próximo Jogo</h5>
+                @if (Model.ProximoJogo is not null)
+                {
+                    var jogo = Model.ProximoJogo;
+                    <p class="mb-1 fw-bold">
+                        @(jogo.Mandante ? "América" : jogo.Adversario) x @(jogo.Mandante ? jogo.Adversario : "América")
+                    </p>
+                    <p class="text-muted small mb-2">@jogo.Campeonato — @jogo.DataHora.ToString("dd/MM/yyyy 'às' HH:mm")</p>
+                    <a asp-controller="Jogos" asp-action="Edit" asp-route-id="@jogo.Id" class="btn btn-sm btn-outline-secondary">
+                        <i class="fa-solid fa-pen"></i> Editar
+                    </a>
+                }
+                else
+                {
+                    <p class="text-muted mb-2">Nenhum próximo jogo cadastrado.</p>
+                    <a asp-controller="Jogos" asp-action="Create" class="btn btn-coelho-primary btn-sm">
+                        <i class="fa-solid fa-plus"></i> Cadastrar Jogo
+                    </a>
+                }
+            </div>
+        </div>
+
+        <div class="card admin-card">
+            <div class="card-body">
+                <h5 class="card-title mb-3"><i class="fa-solid fa-bolt text-coelho-verde"></i> Ações Rápidas</h5>
+                <div class="d-grid gap-2">
+                    <a asp-controller="Posts" asp-action="Create" class="btn btn-coelho-primary"><i class="fa-solid fa-plus"></i> Nova Notícia</a>
+                    <a asp-controller="Jogos" asp-action="Create" class="btn btn-outline-secondary"><i class="fa-solid fa-plus"></i> Novo Jogo</a>
+                    <a asp-controller="BannersAfiliados" asp-action="Create" class="btn btn-outline-secondary"><i class="fa-solid fa-plus"></i> Novo Banner</a>
+                    <a asp-controller="Categorias" asp-action="Create" class="btn btn-outline-secondary"><i class="fa-solid fa-plus"></i> Nova Categoria</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
