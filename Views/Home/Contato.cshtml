@@ -2,6 +2,8 @@
   ViewData["Title"] = "Contato";
 }
 
+<partial name="_Breadcrumb" model='new List<DiarioDoCoelho.ViewModels.BreadcrumbItem> { new("Contato") }' />
+
 <div class="card coelho-card">
   <div class="card-body">
     <h1 class="text-coelho-verde mb-4">@ViewData["Title"]</h1>
@@ -10,15 +12,15 @@
 
     <ul class="list-unstyled mt-4">
       <li class="mb-3">
-        <strong>📧 E-mail:</strong>
+        <i class="fa-solid fa-envelope"></i> <strong>E-mail:</strong>
         <a href="mailto:diario.coelho.afc@gmail.com">diario.coelho.afc@gmail.com</a>
       </li>
       <li class="mb-3">
-        <strong>📷 Instagram:</strong>
+        <i class="fa-brands fa-instagram"></i> <strong>Instagram:</strong>
         <a href="https://instagram.com/diariocoelho" target="_blank" rel="noopener">@@diariocoelho</a>
       </li>
       <li class="mb-3">
-        <strong>🐦 X (Twitter):</strong>
+        <i class="fa-brands fa-twitter"></i> <strong>X (Twitter):</strong>
         <a href="https://x.com/DiarioDoCoelho" target="_blank" rel="noopener">@@DiarioDoCoelho</a>
       </li>
     </ul>

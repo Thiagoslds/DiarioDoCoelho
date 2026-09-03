@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DiarioDoCoelho.Data;
+using DiarioDoCoelho.Models;
 
 namespace DiarioDoCoelho.Controllers;
 
@@ -13,6 +14,7 @@ public class PostController(ApplicationDbContext context) : Controller
     {
         var posts = await _context.Posts
             .Include(p => p.Categoria)
+            .Where(p => p.TipoPost == TipoPost.Noticia)
             .OrderByDescending(p => p.DataPublicacao)
             .ToListAsync();
 
@@ -35,6 +37,11 @@ public class PostController(ApplicationDbContext context) : Controller
         if (post is null)
         {
             return NotFound();
+        }
+
+        if (!string.IsNullOrEmpty(post.FonteNoticiaUrl))
+        {
+            return RedirectToAction("Ler", "Giro", new { slug = post.Slug });
         }
 
         return View(post);

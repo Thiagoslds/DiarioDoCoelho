@@ -3,9 +3,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DiarioDoCoelho.Models
 {
+    public enum TipoPost
+    {
+        Noticia = 0,
+        Artigo = 1,
+        Historia = 2
+    }
+
     public class Post
     {
         public int Id { get; set; }
+
+        [Display(Name = "Tipo de Conteúdo")]
+        public TipoPost TipoPost { get; set; } = TipoPost.Noticia;
 
         [Required(ErrorMessage = "Informe o título da notícia.")]
         [StringLength(200)]

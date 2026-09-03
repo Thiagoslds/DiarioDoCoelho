@@ -1,162 +1,329 @@
 ﻿@model DiarioDoCoelho.ViewModels.HomeIndexViewModel
 
 @{
-    ViewData["Title"] = "Início";
+  ViewData["Title"] = "Início";
 
-    string CorCategoria(string? nome) => nome switch
-    {
-        "Últimas Notícias" => "verde",
-        "Mercado da Bola" => "vermelho",
-        "Análise & Opinião" => "vinho",
-        "DNA Formador" => "retro",
-        _ => "verde"
-    };
+  string CorCategoria(string? nome) => nome switch
+  {
+    "Últimas Notícias" => "verde",
+    "Mercado da Bola" => "vermelho",
+    "Análise & Opinião" => "vinho",
+    "DNA Formador" => "retro",
+    "Baú do Coelho" => "retro",
+    _ => "verde"
+  };
+
+  string LinkPost(DiarioDoCoelho.Models.Post post) =>
+      !string.IsNullOrEmpty(post.FonteNoticiaUrl) ? Url.Action("Ler", "Giro", new { slug = post.Slug })! : Url.Action("Ler", "Post", new { slug = post.Slug })!;
 }
-
-<!-- Slot AdSense Topo da Home -->
-
+<!--
+-->
+<!-- Bloco 1: O Destaque Factual -->
 @if (Model.PostDestaque is not null)
 {
-    var destaque = Model.PostDestaque;
-    var imagemFundo = string.IsNullOrEmpty(destaque.ImagemCapa) ? "/img/jogador.jpg" : destaque.ImagemCapa;
+  var destaque = Model.PostDestaque;
+  var imagemFundo = string.IsNullOrEmpty(destaque.ImagemCapa) ? "/img/jogador.jpg" : destaque.ImagemCapa;
 
-    <a asp-controller="Post" asp-action="Ler" asp-route-slug="@destaque.Slug" class="coelho-manchete d-block text-decoration-none mb-4" style="background-image: url('@imagemFundo');">
-        <div class="coelho-manchete-overlay">
-            <span class="coelho-badge mb-2" data-cor="@CorCategoria(destaque.Categoria?.Nome)">@destaque.Categoria?.Nome</span>
-            <h1 class="coelho-manchete-titulo">@destaque.Titulo</h1>
-            <p class="coelho-manchete-resumo d-none d-md-block">@destaque.Resumo</p>
-            <span class="coelho-manchete-cta">Leia a matéria completa &rarr;</span>
-        </div>
-    </a>
+  <a href="@LinkPost(destaque)" class="coelho-manchete d-block text-decoration-none mb-4" style="background-image: url('@imagemFundo');">
+    <div class="coelho-manchete-overlay">
+      <span class="coelho-badge mb-2" data-cor="@CorCategoria(destaque.Categoria?.Nome)">@destaque.Categoria?.Nome</span>
+      <h1 class="coelho-manchete-titulo">@destaque.Titulo</h1>
+      <p class="coelho-manchete-resumo d-none d-md-block">@destaque.Resumo</p>
+      <span class="coelho-manchete-cta">Leia a matéria completa &rarr;</span>
+    </div>
+  </a>
 }
 else
 {
-    <section class="coelho-hero">
-        <span class="coelho-hero-badge">🐰 Diário do Coelho</span>
-        <h1>Tudo sobre o América em um só lugar</h1>
-        <p>Notícias, bastidores, mercado da bola e opinião sobre o Coelho — a paixão alviverde direto pra você.</p>
-        <img src="~/img/jogador.jpg" alt="Jogador do América" class="coelho-hero-jogador" />
-    </section>
+  <section class="coelho-hero">
+    <span class="coelho-hero-badge">🐰 Diário do Coelho</span>
+    <h1>Tudo sobre o América em um só lugar</h1>
+    <p>Notícias, bastidores, mercado da bola e opinião sobre o Coelho — a paixão alviverde direto pra você.</p>
+    <img src="~/img/jogador.jpg" alt="Jogador do América" class="coelho-hero-jogador" />
+  </section>
 }
 
-@if (Model.ProximoJogo is not null)
+<partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Banner (728x90)" }' />
+@{
+  string NomeCategoriaJogo(DiarioDoCoelho.Models.CategoriaJogo categoria) => categoria switch
+  {
+    DiarioDoCoelho.Models.CategoriaJogo.Sub20 => "Sub-20",
+    DiarioDoCoelho.Models.CategoriaJogo.Sub17 => "Sub-17",
+    _ => "Profissional"
+  };
+}
+
+<!-- Bloco 2: O Placar e o Contexto Imediato -->
+@if (Model.ProximosJogos.Any())
 {
-    var jogo = Model.ProximoJogo;
-    <div class="card coelho-proximo-jogo mb-4">
-        <div class="card-body text-center py-4">
-            <span class="badge mb-3">Próximo Jogo do Coelho</span>
-            <div class="row align-items-center justify-content-center g-3">
+  <div id="coelhoProximosJogosCarousel" class="carousel slide coelho-proximo-jogo-carousel mb-4" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      @for (var i = 0; i < Model.ProximosJogos.Count; i++)
+      {
+        var jogo = Model.ProximosJogos[i];
+        <div class="carousel-item @(i == 0 ? "active" : "")">
+          <div class="card coelho-proximo-jogo">
+            <div class="card-body text-center py-4">
+              <span class="badge mb-3">Próximo Jogo — @NomeCategoriaJogo(jogo.Categoria)</span>
+              <div class="row align-items-center justify-content-center g-3">
                 <div class="col-3 col-md-2 text-end">
-                    @if (jogo.Mandante)
-                    {
-                        <img src="~/img/afc-escudos-site-branco-1.png" alt="Escudo do América" class="coelho-placar-escudo" />
-                    }
-                    else
-                    {
-                        <div class="coelho-escudo-generico coelho-escudo-generico-sm mx-auto">@jogo.Adversario.Substring(0, Math.Min(3, jogo.Adversario.Length)).ToUpper()</div>
-                    }
+                  @if (jogo.Mandante)
+                  {
+                    <img src="~/img/afc-escudos-site-branco-1.png" alt="Escudo do América" class="coelho-placar-escudo" />
+                  }
+                  else
+                  {
+                    <img src="~/img/cruzeiro_1.png" alt="Escudo do Adversário" class="coelho-placar-escudo" />
+                  }
                 </div>
                 <div class="col-4 col-md-3">
-                    <p class="mb-0 fw-bold fs-5">
-                        @(jogo.Mandante ? "América" : jogo.Adversario)
-                        <span class="text-muted fw-normal">x</span>
-                        @(jogo.Mandante ? jogo.Adversario : "América")
-                    </p>
-                    <p class="mb-0 text-muted small">@jogo.Campeonato — @jogo.DataHora.ToString("dd/MM/yyyy 'às' HH:mm")</p>
+                  <p class="mb-0 fw-bold fs-5">
+                    @(jogo.Mandante ? "América" : jogo.Adversario)
+                    <span class="text-muted fw-normal">x</span>
+                    @(jogo.Mandante ? jogo.Adversario : "América")
+                  </p>
+                  <p class="mb-0 text-muted small">@jogo.Campeonato — @jogo.DataHora.ToString("dd/MM/yyyy 'às' HH:mm")</p>
                 </div>
                 <div class="col-3 col-md-2 text-start">
-                    @if (!jogo.Mandante)
-                    {
-                        <img src="~/img/afc-escudos-site-branco-1.png" alt="Escudo do América" class="coelho-placar-escudo" />
-                    }
-                    else
-                    {
-                        <div class="coelho-escudo-generico coelho-escudo-generico-sm mx-auto">@jogo.Adversario.Substring(0, Math.Min(3, jogo.Adversario.Length)).ToUpper()</div>
-                    }
+                  @if (!jogo.Mandante)
+                  {
+                    <img src="~/img/afc-escudos-site-branco-1.png" alt="Escudo do América" class="coelho-placar-escudo" />
+                  }
+                  else
+                  {
+                    <img src="~/img/cruzeiro_1.png" alt="Escudo do Adversário" class="coelho-placar-escudo" />
+                  }
                 </div>
+              </div>
+              <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-2 mt-3">
+                <a asp-controller="Jogos" asp-action="Detalhes" asp-route-id="@jogo.Id" class="d-inline-block small fw-semibold text-coelho-verde">
+                  Saiba mais sobre a partida &rarr;
+                </a>
+                @if (!string.IsNullOrEmpty(jogo.LinkTabela))
+                {
+                  <span class="d-none d-sm-inline text-muted">|</span>
+                  <a href="@jogo.LinkTabela" target="_blank" rel="nofollow noopener" class="d-inline-block small fw-semibold text-coelho-vermelho">
+                    Ver tabela do campeonato &rarr;
+                  </a>
+                }
+              </div>
             </div>
-            <a asp-controller="Jogos" asp-action="Detalhes" asp-route-id="@jogo.Id" class="d-inline-block mt-3 small fw-semibold text-coelho-verde">
-                Saiba mais sobre a partida &rarr;
-            </a>
+          </div>
         </div>
+      }
     </div>
+    @if (Model.ProximosJogos.Count > 1)
+    {
+      <button class="carousel-control-prev" type="button" data-bs-target="#coelhoProximosJogosCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#coelhoProximosJogosCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Próximo</span>
+      </button>
+    }
+  </div>
 }
+
 
 @if (Model.BannersAtivos.Any())
 {
-    var bannerTopo = Model.BannersAtivos.FirstOrDefault(b => b.Posicao == "Topo");
-    if (bannerTopo is not null)
-    {
-        <a href="@bannerTopo.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="d-block mb-4 text-center">
-            <img src="@bannerTopo.ImagemUrl" alt="@bannerTopo.Titulo" class="img-fluid rounded" />
-        </a>
-    }
+  var bannerTopo = Model.BannersAtivos.FirstOrDefault(b => b.Posicao == "Topo");
+  if (bannerTopo is not null)
+  {
+    <a href="@bannerTopo.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="d-block mb-4 text-center">
+      <img src="@bannerTopo.ImagemUrl" alt="@bannerTopo.Titulo" class="img-fluid rounded" />
+    </a>
+  }
 }
 
-
+<!-- Bloco 3: As Últimas do Giro (isca de notícias de parceiros) -->
 <div class="row">
-    <div class="col-12 col-lg-8">
-        <h2 class="mb-3 text-coelho-verde">Últimas Notícias</h2>
+  <div class="col-12 col-lg-8">
+    @if (Model.UltimosPosts.Any())
+    {
+      <h2 class="mb-3 text-coelho-verde">Últimas Notícias</h2>
 
-        @foreach (var post in Model.UltimosPosts)
-        {
-            <div class="card coelho-card mb-3">
-                <div class="row g-0">
-                    @if (!string.IsNullOrEmpty(post.ImagemCapa))
-                    {
-                        <div class="col-4 col-md-3">
-                            <img src="@post.ImagemCapa" alt="@post.Titulo" class="coelho-card-img" />
-                        </div>
-                    }
-                    <div class="col-8 col-md-9">
-                        <div class="card-body">
-                            <span class="coelho-badge mb-2" data-cor="@CorCategoria(post.Categoria?.Nome)">@post.Categoria?.Nome</span>
-                            <h5 class="card-title">
-                                <a asp-controller="Post" asp-action="Ler" asp-route-slug="@post.Slug" class="text-decoration-none">@post.Titulo</a>
-                            </h5>
-                            <p class="card-text text-muted small">@post.Resumo</p>
-                            <p class="card-text"><small class="text-muted">@post.DataPublicacao.ToString("dd/MM/yyyy")</small></p>
-                        </div>
-                    </div>
-                </div>
+      @foreach (var post in Model.UltimosPosts.Take(3))
+      {
+        <div class="card coelho-card mb-3">
+          <div class="row g-0">
+            @if (!string.IsNullOrEmpty(post.ImagemCapa))
+            {
+              <div class="col-4 col-md-3">
+                <img src="@post.ImagemCapa" alt="@post.Titulo" class="coelho-card-img" />
+              </div>
+            }
+            <div class="col-8 col-md-9">
+              <div class="card-body">
+                <span class="coelho-badge mb-2" data-cor="@CorCategoria(post.Categoria?.Nome)">@post.Categoria?.Nome</span>
+                <h5 class="card-title">
+                  <a href="@LinkPost(post)" class="text-decoration-none">@post.Titulo</a>
+                </h5>
+                <p class="card-text text-muted small">@post.Resumo</p>
+                <p class="card-text"><small class="text-muted">@post.DataPublicacao.ToString("dd/MM/yyyy")</small></p>
+              </div>
             </div>
-
-            <!-- Slot AdSense Meio de Texto (inserir a cada N posts, se desejar) -->
-        }
-
-        @if (!Model.UltimosPosts.Any())
-        {
-            <p class="text-muted">Nenhuma notícia publicada ainda.</p>
-        }
-    </div>
-
-    <div class="col-12 col-lg-4">
-        <!-- Slot AdSense Lateral -->
-
-        @{
-            var bannerLateral = Model.BannersAtivos.FirstOrDefault(b => b.Posicao == "Lateral");
-        }
-        @if (bannerLateral is not null)
-        {
-            <a href="@bannerLateral.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="d-block mb-4 text-center">
-                <img src="@bannerLateral.ImagemUrl" alt="@bannerLateral.Titulo" class="img-fluid rounded" />
-            </a>
-        }
-
-        <div class="card coelho-loja-banner mb-4">
-            <img src="~/img/camisa.jpg" alt="Camisa do América" />
-            <div class="card-body">
-                <h5 class="card-title">Loja do Coelho</h5>
-                <p class="card-text">Confira os produtos e mantos do América selecionados para você.</p>
-                <a asp-controller="Loja" asp-action="Index" class="btn btn-coelho-outline w-100">Ver Loja</a>
-            </div>
+          </div>
         </div>
+      }
 
-        <div class="card coelho-sidebar-card mb-4">
-            <div class="card-header">Escudo Retrô</div>
-            <div class="card-body text-center bg-coelho-bege">
-                <img src="~/img/Logo-America-VERDE-LIMPA.png" alt="Escudo América" style="max-height:160px;" class="img-fluid" />
-            </div>
+      <div class="text-center mt-4">
+        <a asp-controller="Post" asp-action="Index" class="btn btn-coelho-primary px-4">Ver mais notícias &rarr;</a>
+      </div>
+    }
+  </div>
+
+  <div class="col-12 col-lg-4">
+    @{
+      var bannerLateral = Model.BannersAtivos.FirstOrDefault(b => b.Posicao == "Lateral");
+    }
+    @if (bannerLateral is not null)
+    {
+      <a href="@bannerLateral.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="d-block mb-4 text-center">
+        <img src="@bannerLateral.ImagemUrl" alt="@bannerLateral.Titulo" class="img-fluid rounded" />
+      </a>
+    }
+
+    @{
+      var produtosSidebar = Model.ProdutosLoja.Take(2).ToList();
+    }
+    @if (produtosSidebar.Count > 0)
+    {
+      var produtoSidebar1 = produtosSidebar[0];
+      <div class="card coelho-sidebar-card mb-4">
+        <div class="card-header">Loja do Coelho</div>
+        <div class="card-body text-center">
+          <img src="@produtoSidebar1.ImagemUrl" alt="@produtoSidebar1.Nome" class="img-fluid rounded mb-2" style="max-height:160px;" />
+          <p class="mb-1 fw-semibold small">@produtoSidebar1.Nome</p>
+          <a href="@produtoSidebar1.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="btn btn-coelho-primary btn-sm">Comprar</a>
         </div>
-    </div>
+      </div>
+    }
+
+    <partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Retângulo Médio (300x250)" }' />
+
+    @if (produtosSidebar.Count > 1)
+    {
+      var produtoSidebar2 = produtosSidebar[1];
+      <div class="card coelho-sidebar-card mb-4">
+        <div class="card-header">Loja do Coelho</div>
+        <div class="card-body text-center">
+          <img src="@produtoSidebar2.ImagemUrl" alt="@produtoSidebar2.Nome" class="img-fluid rounded mb-2" style="max-height:160px;" />
+          <p class="mb-1 fw-semibold small">@produtoSidebar2.Nome</p>
+          <a href="@produtoSidebar2.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="btn btn-coelho-primary btn-sm">Comprar</a>
+        </div>
+      </div>
+    }
+  </div>
 </div>
+
+<partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Banner (728x90)" }' />
+
+<!-- Bloco 4: Artigos, Análises e Opiniões Pessoais -->
+@if (Model.Artigos.Any())
+{
+  <section class="mb-5 mt-5">
+    <h2 class="mb-3 text-coelho-verde"><i class="fa-solid fa-pen-nib"></i> Artigos & Opiniões</h2>
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+      @foreach (var artigo in Model.Artigos)
+      {
+        <div class="col">
+          <div class="card coelho-card h-100">
+            @if (!string.IsNullOrEmpty(artigo.ImagemCapa))
+            {
+              <img src="@artigo.ImagemCapa" alt="@artigo.Titulo" class="card-img-top" style="object-fit:cover; height:180px;" />
+            }
+            <div class="card-body">
+              <span class="coelho-badge mb-2" data-cor="vinho">@artigo.Categoria?.Nome</span>
+              <h5 class="card-title">
+                <a asp-controller="Post" asp-action="Ler" asp-route-slug="@artigo.Slug" class="text-decoration-none">@artigo.Titulo</a>
+              </h5>
+              <p class="card-text text-muted small">@artigo.Resumo</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+    <div class="text-center mt-4">
+      <a asp-controller="Artigos" asp-action="Index" class="btn btn-coelho-primary px-4">Ver todos os artigos &rarr;</a>
+    </div>
+  </section>
+}
+
+<!-- Bloco 5: O Momento Nostalgia / História -->
+@if (Model.BauDoCoelho.Any())
+{
+  <section class="mb-5">
+    <h2 class="mb-3 text-coelho-verde"><i class="fa-solid fa-box-archive"></i> Baú do Coelho</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+      @foreach (var historia in Model.BauDoCoelho)
+      {
+        <div class="col">
+          <div class="card coelho-card h-100">
+            @if (!string.IsNullOrEmpty(historia.ImagemCapa))
+            {
+              <img src="@historia.ImagemCapa" alt="@historia.Titulo" class="card-img-top" style="object-fit:cover; height:160px;" />
+            }
+            <div class="card-body d-flex flex-column">
+              <h6 class="card-title">
+                <a asp-controller="Post" asp-action="Ler" asp-route-slug="@historia.Slug" class="text-decoration-none">@historia.Titulo</a>
+              </h6>
+              <p class="card-text text-muted small flex-grow-1">@historia.Resumo</p>
+              @if (!string.IsNullOrEmpty(historia.ProdutoAfiliadoUrl))
+              {
+                <a href="@historia.ProdutoAfiliadoUrl" target="_blank" rel="nofollow sponsored noopener" class="btn btn-sm btn-coelho-outline mt-2">
+                  <i class="fa-solid fa-shirt"></i> Camisa retrô da época
+                </a>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+    <div class="text-center mt-4">
+      <a asp-controller="Bau" asp-action="Index" class="btn btn-coelho-primary px-4">Explorar o Baú do Coelho &rarr;</a>
+    </div>
+  </section>
+}
+
+<!-- Bloco 6: A Loja do Coelho -->
+@if (Model.ProdutosLoja.Any())
+{
+  <section class="mb-4">
+    <h2 class="mb-3 text-coelho-verde"><i class="fa-solid fa-cart-shopping"></i> Loja do Coelho</h2>
+    <div id="coelhoLojaCarousel" class="carousel slide coelho-loja-carousel" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        @for (var i = 0; i < Model.ProdutosLoja.Count; i++)
+        {
+          var item = Model.ProdutosLoja[i];
+          <div class="carousel-item @(i == 0 ? "active" : "")">
+            <div class="d-flex justify-content-center">
+              <div class="card shadow-sm" style="max-width: 320px;">
+                <img src="@item.ImagemUrl" class="card-img-top" alt="@item.Nome" style="object-fit:cover; height:220px;" />
+                <div class="card-body d-flex flex-column">
+                  <span class="badge bg-secondary align-self-start mb-2">@item.Loja</span>
+                  <h6 class="card-title">@item.Nome</h6>
+                  <p class="card-text text-muted small flex-grow-1">@item.Descricao</p>
+                  <a href="@item.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="btn btn-coelho-primary mt-auto">Comprar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#coelhoLojaCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#coelhoLojaCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Próximo</span>
+      </button>
+    </div>
+    <div class="text-center mt-3">
+      <a asp-controller="Loja" asp-action="Index" class="btn btn-coelho-primary px-4">Ver Loja Completa &rarr;</a>
+    </div>
+  </section>
+}

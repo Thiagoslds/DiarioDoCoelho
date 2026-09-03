@@ -29,7 +29,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             new Categoria { Id = 1, Nome = "Últimas Notícias" },
             new Categoria { Id = 2, Nome = "Mercado da Bola" },
             new Categoria { Id = 3, Nome = "Análise & Opinião" },
-            new Categoria { Id = 4, Nome = "DNA Formador" }
+            new Categoria { Id = 4, Nome = "DNA Formador" },
+            new Categoria { Id = 5, Nome = "Baú do Coelho" }
         );
     }
 }

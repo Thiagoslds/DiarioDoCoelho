@@ -4,7 +4,9 @@
     ViewData["Title"] = Model.Titulo;
 }
 
-<!-- Slot AdSense Topo do Post -->
+<partial name="_Breadcrumb" model='new List<DiarioDoCoelho.ViewModels.BreadcrumbItem> { new("Notícias", Url.Action("Index", "Post")), new(Model.Titulo) }' />
+
+<partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Banner (728x90)" }' />
 
 <article>
     <span class="badge bg-danger mb-2">@Model.Categoria?.Nome</span>
@@ -30,7 +32,7 @@
 
     <p class="lead">@Model.Resumo</p>
 
-    <!-- Slot AdSense Meio de Texto -->
+    <partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Retângulo Médio (300x250)" }' />
 
     <div class="post-conteudo">
         @Html.Raw(Model.Conteudo)
@@ -44,8 +46,6 @@
             </a>
         </div>
     }
-
-    <!-- Slot AdSense Rodapé do Post -->
 </article>
 
 <div class="mt-4">

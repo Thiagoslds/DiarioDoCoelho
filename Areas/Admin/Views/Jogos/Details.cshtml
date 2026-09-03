@@ -8,6 +8,9 @@
 
 <div>
     <dl class="row">
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Categoria)</dt>
+        <dd class="col-sm-10">@Model.Categoria</dd>
+
         <dt class="col-sm-2">@Html.DisplayNameFor(model => model.DataHora)</dt>
         <dd class="col-sm-10">@Model.DataHora.ToString("dd/MM/yyyy HH:mm")</dd>
 
@@ -22,6 +25,9 @@
 
         <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Mandante)</dt>
         <dd class="col-sm-10">@(Model.Mandante ? "Sim" : "Não")</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.LinkTabela)</dt>
+        <dd class="col-sm-10">@(string.IsNullOrEmpty(Model.LinkTabela) ? "-" : Model.LinkTabela)</dd>
     </dl>
 </div>
 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Editar</a>

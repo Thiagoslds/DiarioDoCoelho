@@ -6,6 +6,8 @@
     var visitanteNome = Model.Mandante ? Model.Adversario : "América";
 }
 
+<partial name="_Breadcrumb" model='new List<DiarioDoCoelho.ViewModels.BreadcrumbItem> { new("Detalhes da Partida") }' />
+
 <div class="coelho-partida-header text-center mb-4">
     <span class="coelho-hero-badge mb-3">@Model.Campeonato</span>
     <div class="row align-items-center justify-content-center g-4 mt-2">

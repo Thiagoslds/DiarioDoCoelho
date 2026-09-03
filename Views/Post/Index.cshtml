@@ -11,7 +11,12 @@
         "DNA Formador" => "retro",
         _ => "verde"
     };
+
+    string LinkPost(DiarioDoCoelho.Models.Post post) =>
+        !string.IsNullOrEmpty(post.FonteNoticiaUrl) ? Url.Action("Ler", "Giro", new { slug = post.Slug })! : Url.Action("Ler", "Post", new { slug = post.Slug })!;
 }
+
+<partial name="_Breadcrumb" model='new List<DiarioDoCoelho.ViewModels.BreadcrumbItem> { new("Notícias") }' />
 
 <h1 class="mb-4 text-coelho-verde">Notícias</h1>
 
@@ -32,7 +37,7 @@
                 <div class="card-body">
                     <span class="coelho-badge mb-2" data-cor="@CorCategoria(post.Categoria?.Nome)">@post.Categoria?.Nome</span>
                     <h5 class="card-title">
-                        <a asp-controller="Post" asp-action="Ler" asp-route-slug="@post.Slug" class="text-decoration-none">@post.Titulo</a>
+                        <a href="@LinkPost(post)" class="text-decoration-none">@post.Titulo</a>
                     </h5>
                     <p class="card-text text-muted small">@post.Resumo</p>
                     <p class="card-text"><small class="text-muted">@post.DataPublicacao.ToString("dd/MM/yyyy")</small></p>

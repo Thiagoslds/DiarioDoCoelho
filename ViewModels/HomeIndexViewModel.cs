@@ -6,7 +6,11 @@ namespace DiarioDoCoelho.ViewModels
     {
         public Post? PostDestaque { get; set; }
         public List<Post> UltimosPosts { get; set; } = new();
-        public Jogo? ProximoJogo { get; set; }
+        public List<Jogo> ProximosJogos { get; set; } = new();
         public List<BannerAfiliado> BannersAtivos { get; set; } = new();
+        public List<Post> GiroNoticias { get; set; } = new();
+        public List<Post> Artigos { get; set; } = new();
+        public List<Post> BauDoCoelho { get; set; } = new();
+        public List<ProdutoAfiliadoViewModel> ProdutosLoja { get; set; } = new();
     }
 }

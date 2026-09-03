@@ -38,6 +38,12 @@
                             <a class="nav-link" asp-area="" asp-controller="Post" asp-action="Index">Notícias</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Artigos" asp-action="Index">Artigos & Opiniões</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Bau" asp-action="Index">Baú do Coelho</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Loja" asp-action="Index">Loja do Coelho</a>
                         </li>
                     </ul>
@@ -48,15 +54,12 @@
         <div class="coelho-navbar-accent"></div>
     </header>
 
-    <!-- Slot AdSense Topo -->
-
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+        <partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Banner (728x90)" }' />
     </div>
-
-    <!-- Slot AdSense Rodapé -->
 
     <footer class="coelho-footer">
         <div class="container py-4 d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">

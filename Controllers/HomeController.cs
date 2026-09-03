@@ -15,6 +15,7 @@ public class HomeController(ApplicationDbContext context) : Controller
     {
         var ultimosPosts = await _context.Posts
             .Include(p => p.Categoria)
+            .Where(p => p.TipoPost == TipoPost.Noticia)
             .OrderByDescending(p => p.DataPublicacao)
             .Take(11)
             .ToListAsync();
@@ -22,10 +23,37 @@ public class HomeController(ApplicationDbContext context) : Controller
         var postDestaque = ultimosPosts.FirstOrDefault();
         var restantePosts = ultimosPosts.Skip(1).ToList();
 
-        var proximoJogo = await _context.Jogos
+        var giroNoticias = await _context.Posts
+            .Include(p => p.Categoria)
+            .Where(p => p.TipoPost == TipoPost.Noticia && p.FonteNoticiaUrl != null && p.FonteNoticiaUrl != "")
+            .OrderByDescending(p => p.DataPublicacao)
+            .Take(4)
+            .ToListAsync();
+
+        var artigos = await _context.Posts
+            .Include(p => p.Categoria)
+            .Where(p => p.TipoPost == TipoPost.Artigo)
+            .OrderByDescending(p => p.DataPublicacao)
+            .Take(2)
+            .ToListAsync();
+
+        var bauDoCoelho = await _context.Posts
+            .Include(p => p.Categoria)
+            .Where(p => p.TipoPost == TipoPost.Historia)
+            .OrderByDescending(p => p.DataPublicacao)
+            .Take(3)
+            .ToListAsync();
+
+        var jogosFuturos = await _context.Jogos
             .Where(j => j.DataHora >= DateTime.Now)
             .OrderBy(j => j.DataHora)
-            .FirstOrDefaultAsync();
+            .ToListAsync();
+
+        var proximosJogos = jogosFuturos
+            .GroupBy(j => j.Categoria)
+            .Select(g => g.First())
+            .OrderBy(j => j.Categoria)
+            .ToList();
 
         var bannersAtivos = await _context.BannersAfiliados
             .Where(b => b.Ativo)
@@ -35,8 +63,12 @@ public class HomeController(ApplicationDbContext context) : Controller
         {
             PostDestaque = postDestaque,
             UltimosPosts = restantePosts,
-            ProximoJogo = proximoJogo,
-            BannersAtivos = bannersAtivos
+            ProximosJogos = proximosJogos,
+            BannersAtivos = bannersAtivos,
+            GiroNoticias = giroNoticias,
+            Artigos = artigos,
+            BauDoCoelho = bauDoCoelho,
+            ProdutosLoja = ProdutosAfiliadosMock.Produtos
         };
 
         return View(viewModel);

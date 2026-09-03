@@ -38,7 +38,7 @@ namespace DiarioDoCoelho.Areas.Admin.Controllers
         // POST: Admin/Jogos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DataHora,Adversario,Campeonato,PlacarAmerica,PlacarAdversario,Mandante")] Jogo jogo)
+        public async Task<IActionResult> Create([Bind("Id,Categoria,DataHora,Adversario,Campeonato,PlacarAmerica,PlacarAdversario,Mandante,LinkTabela")] Jogo jogo)
         {
             if (ModelState.IsValid)
             {
@@ -63,7 +63,7 @@ namespace DiarioDoCoelho.Areas.Admin.Controllers
         // POST: Admin/Jogos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DataHora,Adversario,Campeonato,PlacarAmerica,PlacarAdversario,Mandante")] Jogo jogo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Categoria,DataHora,Adversario,Campeonato,PlacarAmerica,PlacarAdversario,Mandante,LinkTabela")] Jogo jogo)
         {
             if (id != jogo.Id) return NotFound();
 

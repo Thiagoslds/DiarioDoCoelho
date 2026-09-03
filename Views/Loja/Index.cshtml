@@ -7,7 +7,9 @@
 <h1 class="mb-1">Loja do Coelho</h1>
 <p class="text-muted mb-4">Produtos e mantos do América selecionados para o torcedor. Ao comprar pelos links abaixo, você apoia o Diário do Coelho sem pagar nada a mais por isso.</p>
 
-<!-- Slot AdSense Topo da Loja -->
+<partial name="_Breadcrumb" model='new List<DiarioDoCoelho.ViewModels.BreadcrumbItem> { new("Loja do Coelho") }' />
+
+<partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Banner (728x90)" }' />
 
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     @foreach (var produto in Model)
@@ -28,4 +30,4 @@
     }
 </div>
 
-<!-- Slot AdSense Rodapé da Loja -->
+<partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Banner (728x90)" }' />

@@ -1,0 +1,41 @@
+@model List<Post>
+
+@{
+    ViewData["Title"] = "Artigos & Opiniões";
+}
+
+<partial name="_Breadcrumb" model='new List<DiarioDoCoelho.ViewModels.BreadcrumbItem> { new("Artigos & Opiniões") }' />
+
+<h1 class="mb-1 text-coelho-verde"><i class="fa-solid fa-pen-nib"></i> Artigos & Opiniões</h1>
+<p class="text-muted mb-4">Análises táticas e opiniões pessoais sobre o América Futebol Clube.</p>
+
+<partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Banner (728x90)" }' />
+
+<div class="row row-cols-1 row-cols-md-2 g-4">
+    @foreach (var post in Model)
+    {
+        <div class="col">
+            <div class="card coelho-card h-100">
+                @if (!string.IsNullOrEmpty(post.ImagemCapa))
+                {
+                    <img src="@post.ImagemCapa" alt="@post.Titulo" class="card-img-top" style="object-fit:cover; height:200px;" />
+                }
+                <div class="card-body">
+                    <span class="coelho-badge mb-2" data-cor="vinho">@post.Categoria?.Nome</span>
+                    <h5 class="card-title">
+                        <a asp-controller="Post" asp-action="Ler" asp-route-slug="@post.Slug" class="text-decoration-none">@post.Titulo</a>
+                    </h5>
+                    <p class="card-text text-muted small">@post.Resumo</p>
+                    <p class="card-text"><small class="text-muted">@post.DataPublicacao.ToString("dd/MM/yyyy")</small></p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Nenhum artigo publicado ainda.</p>
+}
+
+<partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Banner (728x90)" }' />

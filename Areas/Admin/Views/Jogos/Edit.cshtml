@@ -12,6 +12,10 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="mb-3">
+                <label asp-for="Categoria" class="form-label"></label>
+                <select asp-for="Categoria" class="form-select" asp-items="Html.GetEnumSelectList<DiarioDoCoelho.Models.CategoriaJogo>()"></select>
+            </div>
+            <div class="mb-3">
                 <label asp-for="DataHora" class="form-label"></label>
                 <input asp-for="DataHora" class="form-control" />
                 <span asp-validation-for="DataHora" class="text-danger"></span>
@@ -39,6 +43,11 @@
             <div class="form-check mb-3">
                 <input asp-for="Mandante" class="form-check-input" />
                 <label asp-for="Mandante" class="form-check-label"></label>
+            </div>
+            <div class="mb-3">
+                <label asp-for="LinkTabela" class="form-label"></label>
+                <input asp-for="LinkTabela" class="form-control" placeholder="https://..." />
+                <span asp-validation-for="LinkTabela" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-coelho-primary"><i class="fa-solid fa-floppy-disk"></i> Salvar</button>
             <a asp-action="Index" class="btn btn-secondary">Cancelar</a>

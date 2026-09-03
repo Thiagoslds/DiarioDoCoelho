@@ -2,9 +2,19 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DiarioDoCoelho.Models
 {
+    public enum CategoriaJogo
+    {
+        Profissional = 0,
+        Sub20 = 1,
+        Sub17 = 2
+    }
+
     public class Jogo
     {
         public int Id { get; set; }
+
+        [Display(Name = "Categoria")]
+        public CategoriaJogo Categoria { get; set; } = CategoriaJogo.Profissional;
 
         [Required(ErrorMessage = "Informe a data e hora do jogo.")]
         [Display(Name = "Data e Hora")]
@@ -29,5 +39,9 @@ namespace DiarioDoCoelho.Models
 
         [Display(Name = "América manda o jogo?")]
         public bool Mandante { get; set; }
+
+        [StringLength(500)]
+        [Display(Name = "Link da Tabela do Campeonato")]
+        public string? LinkTabela { get; set; }
     }
 }

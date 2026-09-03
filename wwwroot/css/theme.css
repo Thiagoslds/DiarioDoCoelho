@@ -292,6 +292,28 @@ a:hover {
   color: var(--coelho-branco);
 }
 
+.coelho-loja-carousel .carousel-control-prev-icon,
+.coelho-loja-carousel .carousel-control-next-icon {
+    background-color: var(--coelho-verde);
+    border-radius: 50%;
+    padding: 1.2rem;
+    background-size: 50%;
+}
+
+.coelho-proximo-jogo-carousel .carousel-control-prev-icon,
+.coelho-proximo-jogo-carousel .carousel-control-next-icon {
+    background-color: var(--coelho-verde);
+    border-radius: 50%;
+    padding: 1.2rem;
+    background-size: 50%;
+}
+
+.coelho-proximo-jogo-carousel .carousel-control-prev,
+.coelho-proximo-jogo-carousel .carousel-control-next {
+    width: 8%;
+}
+
+
 .btn-coelho-outline {
   background-color: transparent;
   border: 2px solid var(--coelho-branco);
@@ -446,10 +468,76 @@ a:hover {
    ===================== */
 .text-coelho-verde { color: var(--coelho-verde) !important; }
 .text-coelho-amarelo { color: var(--coelho-amarelo) !important; }
+.text-coelho-vermelho { color: var(--coelho-vermelho) !important; }
 .bg-coelho-bege { background-color: var(--coelho-bege) !important; }
 
 @media (max-width: 767.98px) {
   .coelho-hero-jogador {
     display: none;
   }
+}
+
+/* =====================
+   Breadcrumb
+   ===================== */
+.coelho-breadcrumb-wrapper {
+  margin-top: 0.5rem;
+}
+
+.coelho-breadcrumb {
+  background-color: var(--coelho-bege);
+  border-radius: var(--coelho-radius);
+  padding: 0.6rem 1.1rem;
+  font-size: 0.9rem;
+}
+
+.coelho-breadcrumb .breadcrumb-item a {
+  color: var(--coelho-verde);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.coelho-breadcrumb .breadcrumb-item a:hover {
+  text-decoration: underline;
+}
+
+.coelho-breadcrumb .breadcrumb-item.active {
+  color: var(--coelho-texto-claro);
+}
+
+.coelho-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+  color: var(--coelho-vermelho);
+}
+
+/* =====================
+   Slot AdSense (simulado)
+   ===================== */
+.coelho-adsense-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin: 1.5rem auto;
+  padding: 1.25rem;
+  min-height: 100px;
+  border: 2px dashed #b9b9b9;
+  border-radius: var(--coelho-radius);
+  background-color: #f1f1f1;
+  color: #8a8a8a;
+  text-align: center;
+}
+
+.coelho-adsense-slot span.coelho-adsense-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #9b9b9b;
+}
+
+.coelho-adsense-slot span.coelho-adsense-tag {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6c757d;
 }

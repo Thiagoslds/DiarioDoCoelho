@@ -1,0 +1,25 @@
+@model List<DiarioDoCoelho.ViewModels.BreadcrumbItem>
+
+@if (Model is not null && Model.Any())
+{
+    <nav aria-label="breadcrumb" class="coelho-breadcrumb-wrapper">
+        <ol class="breadcrumb coelho-breadcrumb mb-4">
+            <li class="breadcrumb-item">
+                <a asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house"></i></a>
+            </li>
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                var item = Model[i];
+                var isLast = i == Model.Count - 1;
+                if (isLast || string.IsNullOrEmpty(item.Url))
+                {
+                    <li class="breadcrumb-item active" aria-current="page">@item.Texto</li>
+                }
+                else
+                {
+                    <li class="breadcrumb-item"><a href="@item.Url">@item.Texto</a></li>
+                }
+            }
+        </ol>
+    </nav>
+}
