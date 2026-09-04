@@ -1,0 +1,149 @@
+﻿@model List<DiarioDoCoelho.ViewModels.ClassificacaoViewModel>
+
+@{
+  ViewData["Title"] = "Classificação";
+}
+
+<style>
+  .tabela-classificacao {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+    .tabela-classificacao th {
+      background-color: #f8f9fa;
+      color: #333;
+      font-weight: bold;
+      text-align: center;
+      padding: 12px 8px;
+      border-bottom: 2px solid #dee2e6;
+      font-size: 13px;
+    }
+
+    .tabela-classificacao td {
+      padding: 10px 8px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+      vertical-align: middle;
+      font-size: 14px;
+    }
+
+    .tabela-classificacao tbody tr:hover {
+      background-color: #f1f3f5;
+    }
+
+  /* Destaque para o América (opcional, ajusta o ID do time se necessário) */
+  .time-destaque {
+    background-color: #e6f2e6 !important; /* Verde claro pro Coelho */
+    font-weight: bold;
+  }
+
+  .col-time {
+    text-align: left !important;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .escudo-time {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+
+  .col-posicao {
+    font-weight: bold;
+    color: #555;
+  }
+
+  .forma-container {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+  }
+
+  .forma-bolinha {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .forma-v {
+    background-color: #28a745;
+  }
+  /* Vitória - Verde */
+  .forma-e {
+    background-color: #6c757d;
+  }
+  /* Empate - Cinza */
+  .forma-d {
+    background-color: #dc3545;
+  }
+  /* Derrota - Vermelho */
+</style>
+
+<div class="container mt-4">
+  <h2 class="mb-4">Classificação do Campeonato</h2>
+
+  <div class="table-responsive">
+    <table class="tabela-classificacao">
+      <thead>
+        <tr>
+          <th style="width: 50px;">POS</th>
+          <th style="text-align: left;">TIME</th>
+          <th>P</th>
+          <th>J</th>
+          <th>V</th>
+          <th>E</th>
+          <th>D</th>
+          <th>GP</th>
+          <th>GC</th>
+          <th>SG</th>
+          <th>%</th>
+          <th>ÚLTIMOS JOGOS</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach (var item in Model)
+        {
+          // Exemplo: se o ID do América-MG for 33 (verifique na API), aplica classe de destaque
+          var classeDestaque = item.Time.TimeId == 33 ? "time-destaque" : "";
+
+          <tr class="@classeDestaque">
+            <td class="col-posicao">@item.Posicao</td>
+            <td class="col-time">
+              <img src="@item.Time.Escudo" alt="Escudo @item.Time.NomePopular" class="escudo-time" loading="lazy" />
+              <span>@item.Time.NomePopular</span>
+            </td>
+            <td style="font-weight: bold;">@item.Pontos</td>
+            <td>@item.Jogos</td>
+            <td>@item.Vitorias</td>
+            <td>@item.Empates</td>
+            <td>@item.Derrotas</td>
+            <td>@item.GolsPro</td>
+            <td>@item.GolsContra</td>
+            <td>@item.SaldoGols</td>
+            <td>@item.Aproveitamento</td>
+            <td>
+              <div class="forma-container">
+                @if (item.UltimosJogos != null)
+                {
+                  @foreach (var forma in item.UltimosJogos)
+                  {
+                    <span class="forma-bolinha forma-@(forma.ToLower())" title="@forma.ToUpper()"></span>
+                  }
+                }
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -239,6 +239,45 @@ a:hover {
 .coelho-badge[data-cor="vinho"] { background-color: var(--coelho-vinho); }
 .coelho-badge[data-cor="amarelo"] { background-color: var(--coelho-amarelo); color: #3a2b00; }
 
+.coelho-badge-sm {
+  font-size: 0.6rem;
+  padding: 0.22rem 0.5rem;
+}
+
+/* =====================
+   Cards de Notícias Externas (extrator)
+   ===================== */
+.coelho-card-externa {
+  border: none;
+  border-radius: var(--coelho-radius);
+  overflow: hidden;
+  background: var(--coelho-branco);
+  box-shadow: var(--coelho-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.coelho-card-externa:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--coelho-shadow-hover);
+}
+
+.coelho-card-externa-img {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+}
+
+.coelho-card-externa-titulo {
+  color: var(--coelho-texto);
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* =====================
    Sidebar / Destaques
    ===================== */

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DiarioDoCoelho.Data;
+using DiarioDoCoelho.ViewModels;
 
 namespace DiarioDoCoelho.Controllers;
 
@@ -30,8 +31,37 @@ public class GiroController(ApplicationDbContext context) : Controller
             return NotFound();
         }
 
-        ViewBag.ProdutosLoja = ProdutosAfiliadosMock.Produtos.Take(4).ToList();
+        var viewModel = new GiroLerViewModel
+        {
+            Titulo = post.Titulo,
+            ImagemCapa = post.ImagemCapa,
+            FonteNoticiaUrl = post.FonteNoticiaUrl,
+            CategoriaNome = post.Categoria?.Nome,
+            ProdutosLoja = ProdutosAfiliadosMock.Produtos.Take(4).ToList()
+        };
 
-        return View(post);
+        return View(viewModel);
+    }
+
+    // GET: /Giro/Externa?url=...&titulo=...&imagem=...&fonte=...
+    [Route("Giro/Externa")]
+    public IActionResult Externa(string url, string titulo, string? imagem, string? fonte)
+    {
+        if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(titulo))
+        {
+            return NotFound();
+        }
+
+        var viewModel = new GiroLerViewModel
+        {
+            Titulo = titulo,
+            ImagemCapa = imagem,
+            FonteNoticiaUrl = url,
+            CategoriaNome = fonte,
+            ProdutosLoja = ProdutosAfiliadosMock.Produtos.Take(4).ToList()
+        };
+
+        return View("Ler", viewModel);
     }
 }
+

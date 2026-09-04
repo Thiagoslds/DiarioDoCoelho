@@ -1,6 +1,7 @@
+using DiarioDoCoelho.Data;
+using DiarioDoCoelho.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using DiarioDoCoelho.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ExtratorNoticiasService>();
+builder.Services.AddHttpClient<TabelaCampeonatoService>();
 
 var app = builder.Build();
 

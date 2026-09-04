@@ -7,9 +7,11 @@ using DiarioDoCoelho.ViewModels;
 
 namespace DiarioDoCoelho.Controllers;
 
-public class HomeController(ApplicationDbContext context) : Controller
+// Injeção de dependência via construtor primário (C# 12)
+public class HomeController(ApplicationDbContext context, ExtratorNoticiasService extratorNoticias) : Controller
 {
     private readonly ApplicationDbContext _context = context;
+    private readonly ExtratorNoticiasService _extratorNoticias = extratorNoticias;
 
     public async Task<IActionResult> Index()
     {
@@ -23,6 +25,7 @@ public class HomeController(ApplicationDbContext context) : Controller
         var postDestaque = ultimosPosts.FirstOrDefault();
         var restantePosts = ultimosPosts.Skip(1).ToList();
 
+        // Você pode manter o GiroNoticias do seu banco ou removê-lo se as notícias externas forem substituí-lo
         var giroNoticias = await _context.Posts
             .Include(p => p.Categoria)
             .Where(p => p.TipoPost == TipoPost.Noticia && p.FonteNoticiaUrl != null && p.FonteNoticiaUrl != "")
@@ -59,6 +62,9 @@ public class HomeController(ApplicationDbContext context) : Controller
             .Where(b => b.Ativo)
             .ToListAsync();
 
+        // 1. Chama o serviço de raspagem (execução síncrona, pois HtmlAgilityPack trabalha bem assim em operações simples)
+        var noticiasExternas = _extratorNoticias.ObterTodasNoticias();
+
         var viewModel = new HomeIndexViewModel
         {
             PostDestaque = postDestaque,
@@ -68,7 +74,10 @@ public class HomeController(ApplicationDbContext context) : Controller
             GiroNoticias = giroNoticias,
             Artigos = artigos,
             BauDoCoelho = bauDoCoelho,
-            ProdutosLoja = ProdutosAfiliadosMock.Produtos
+            ProdutosLoja = ProdutosAfiliadosMock.Produtos,
+
+            // 2. Passa as notícias raspadas para o ViewModel
+            NoticiasExternas = noticiasExternas
         };
 
         return View(viewModel);

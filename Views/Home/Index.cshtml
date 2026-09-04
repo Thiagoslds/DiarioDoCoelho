@@ -16,8 +16,7 @@
   string LinkPost(DiarioDoCoelho.Models.Post post) =>
       !string.IsNullOrEmpty(post.FonteNoticiaUrl) ? Url.Action("Ler", "Giro", new { slug = post.Slug })! : Url.Action("Ler", "Post", new { slug = post.Slug })!;
 }
-<!--
--->
+
 <!-- Bloco 1: O Destaque Factual -->
 @if (Model.PostDestaque is not null)
 {
@@ -42,6 +41,8 @@ else
     <img src="~/img/jogador.jpg" alt="Jogador do América" class="coelho-hero-jogador" />
   </section>
 }
+
+
 
 <partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Banner (728x90)" }' />
 @{
@@ -102,7 +103,7 @@ else
                 @if (!string.IsNullOrEmpty(jogo.LinkTabela))
                 {
                   <span class="d-none d-sm-inline text-muted">|</span>
-                  <a href="@jogo.LinkTabela" target="_blank" rel="nofollow noopener" class="d-inline-block small fw-semibold text-coelho-vermelho">
+                  <a asp-controller="Tabela" asp-action="Index" target="_blank" rel="nofollow noopener" class="d-inline-block small fw-semibold text-coelho-vermelho">
                     Ver tabela do campeonato &rarr;
                   </a>
                 }
@@ -141,35 +142,29 @@ else
 <!-- Bloco 3: As Últimas do Giro (isca de notícias de parceiros) -->
 <div class="row">
   <div class="col-12 col-lg-8">
-    @if (Model.UltimosPosts.Any())
+    @if (Model.NoticiasExternas.Any())
     {
       <h2 class="mb-3 text-coelho-verde">Últimas Notícias</h2>
 
-      @foreach (var post in Model.UltimosPosts.Take(3))
-      {
-        <div class="card coelho-card mb-3">
-          <div class="row g-0">
-            @if (!string.IsNullOrEmpty(post.ImagemCapa))
-            {
-              <div class="col-4 col-md-3">
-                <img src="@post.ImagemCapa" alt="@post.Titulo" class="coelho-card-img" />
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-3 mb-3">
+        @foreach (var noticia in Model.NoticiasExternas.Take(6))
+        {
+          <div class="col">
+            <a href="@Url.Action("Externa", "Giro", new { url = noticia.Url, titulo = noticia.Titulo, imagem = noticia.ImagemUrl, fonte = noticia.Fonte })" class="text-decoration-none">
+              <div class="card coelho-card-externa h-100">
+                <img src="@noticia.ImagemUrl" alt="@noticia.Titulo" class="coelho-card-externa-img" onerror="this.src='/img/placeholder-america.png'" />
+                <div class="card-body p-2">
+                  <span class="coelho-badge coelho-badge-sm mb-2" data-cor="verde">@noticia.Fonte</span>
+                  <h6 class="card-title coelho-card-externa-titulo">@noticia.Titulo</h6>
+                  <p class="card-text mb-0"><small class="text-muted">@noticia.DataExtracao.ToString("dd/MM/yyyy HH:mm")</small></p>
+                </div>
               </div>
-            }
-            <div class="col-8 col-md-9">
-              <div class="card-body">
-                <span class="coelho-badge mb-2" data-cor="@CorCategoria(post.Categoria?.Nome)">@post.Categoria?.Nome</span>
-                <h5 class="card-title">
-                  <a href="@LinkPost(post)" class="text-decoration-none">@post.Titulo</a>
-                </h5>
-                <p class="card-text text-muted small">@post.Resumo</p>
-                <p class="card-text"><small class="text-muted">@post.DataPublicacao.ToString("dd/MM/yyyy")</small></p>
-              </div>
-            </div>
+            </a>
           </div>
-        </div>
-      }
+        }
+      </div>
 
-      <div class="text-center mt-4">
+      <div class="text-center mt-2 mb-4">
         <a asp-controller="Post" asp-action="Index" class="btn btn-coelho-primary px-4">Ver mais notícias &rarr;</a>
       </div>
     }

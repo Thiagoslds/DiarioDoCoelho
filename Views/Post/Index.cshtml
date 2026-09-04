@@ -1,4 +1,4 @@
-@model List<DiarioDoCoelho.Models.Post>
+@model DiarioDoCoelho.ViewModels.PostIndexViewModel
 
 @{
     ViewData["Title"] = "Notícias";
@@ -20,29 +20,29 @@
 
 <h1 class="mb-4 text-coelho-verde">Notícias</h1>
 
-@if (!Model.Any())
+@if (!Model.Posts.Any() && !Model.NoticiasExternas.Any())
 {
     <p class="text-muted">Nenhuma notícia publicada ainda.</p>
 }
 
-<div class="row">
-    @foreach (var post in Model)
-    {
-        <div class="col-12 col-md-6 mb-4">
-            <div class="card coelho-card h-100">
-                @if (!string.IsNullOrEmpty(post.ImagemCapa))
-                {
-                    <img src="@post.ImagemCapa" alt="@post.Titulo" class="coelho-card-img" style="height:200px;" />
-                }
-                <div class="card-body">
-                    <span class="coelho-badge mb-2" data-cor="@CorCategoria(post.Categoria?.Nome)">@post.Categoria?.Nome</span>
-                    <h5 class="card-title">
-                        <a href="@LinkPost(post)" class="text-decoration-none">@post.Titulo</a>
-                    </h5>
-                    <p class="card-text text-muted small">@post.Resumo</p>
-                    <p class="card-text"><small class="text-muted">@post.DataPublicacao.ToString("dd/MM/yyyy")</small></p>
-                </div>
+@if (Model.NoticiasExternas.Any())
+{
+    <h2 class="mb-3 text-coelho-verde">Últimas do Giro</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-3 mb-5">
+        @foreach (var noticia in Model.NoticiasExternas)
+        {
+            <div class="col">
+                <a href="@Url.Action("Externa", "Giro", new { url = noticia.Url, titulo = noticia.Titulo, imagem = noticia.ImagemUrl, fonte = noticia.Fonte })" class="text-decoration-none">
+                    <div class="card coelho-card-externa h-100">
+                        <img src="@noticia.ImagemUrl" alt="@noticia.Titulo" class="coelho-card-externa-img" onerror="this.src='/img/placeholder-america.png'" />
+                        <div class="card-body p-2">
+                            <span class="coelho-badge coelho-badge-sm mb-2" data-cor="verde">@noticia.Fonte</span>
+                            <h6 class="card-title coelho-card-externa-titulo">@noticia.Titulo</h6>
+                            <p class="card-text mb-0"><small class="text-muted">@noticia.DataExtracao.ToString("dd/MM/yyyy HH:mm")</small></p>
+                        </div>
+                    </div>
+                </a>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+}

@@ -12,5 +12,6 @@ namespace DiarioDoCoelho.ViewModels
         public List<Post> Artigos { get; set; } = new();
         public List<Post> BauDoCoelho { get; set; } = new();
         public List<ProdutoAfiliadoViewModel> ProdutosLoja { get; set; } = new();
+        public List<NoticiaCoelho> NoticiasExternas { get; set; } = new List<NoticiaCoelho>();
     }
 }

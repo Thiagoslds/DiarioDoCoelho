@@ -2,12 +2,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DiarioDoCoelho.Data;
 using DiarioDoCoelho.Models;
+using DiarioDoCoelho.ViewModels;
 
 namespace DiarioDoCoelho.Controllers;
 
-public class PostController(ApplicationDbContext context) : Controller
+public class PostController(ApplicationDbContext context, ExtratorNoticiasService extratorNoticias) : Controller
 {
     private readonly ApplicationDbContext _context = context;
+    private readonly ExtratorNoticiasService _extratorNoticias = extratorNoticias;
 
     // GET: /Post
     public async Task<IActionResult> Index()
@@ -18,7 +20,15 @@ public class PostController(ApplicationDbContext context) : Controller
             .OrderByDescending(p => p.DataPublicacao)
             .ToListAsync();
 
-        return View(posts);
+        var noticiasExternas = _extratorNoticias.ObterTodasNoticias();
+
+        var viewModel = new PostIndexViewModel
+        {
+            Posts = posts,
+            NoticiasExternas = noticiasExternas
+        };
+
+        return View(viewModel);
     }
 
     // GET: /Post/Ler/manto-novo-do-america-e-lancado
