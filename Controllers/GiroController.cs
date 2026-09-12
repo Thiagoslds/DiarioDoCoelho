@@ -9,9 +9,10 @@ namespace DiarioDoCoelho.Controllers;
 /// Página intermediária ("Giro") exibida para notícias de parceiros externos,
 /// com CTA para o site de origem e vitrine da Loja do Coelho.
 /// </summary>
-public class GiroController(ApplicationDbContext context) : Controller
+public class GiroController(ApplicationDbContext context, ExtratorNoticiasService extratorNoticias) : Controller
 {
     private readonly ApplicationDbContext _context = context;
+    private readonly ExtratorNoticiasService _extratorNoticias = extratorNoticias;
 
     // GET: /Giro/titulo-da-noticia
     [Route("Giro/{slug}")]
@@ -37,31 +38,41 @@ public class GiroController(ApplicationDbContext context) : Controller
             ImagemCapa = post.ImagemCapa,
             FonteNoticiaUrl = post.FonteNoticiaUrl,
             CategoriaNome = post.Categoria?.Nome,
+            DataExtracao = post.DataPublicacao,
             ProdutosLoja = ProdutosAfiliadosMock.Produtos.Take(4).ToList()
         };
 
         return View(viewModel);
     }
 
-    // GET: /Giro/Externa?url=...&titulo=...&imagem=...&fonte=...
+    // GET: /Giro/Externa?url=...&titulo=...&imagem=...&fonte=...&subtexto=...&data=...
     [Route("Giro/Externa")]
-    public IActionResult Externa(string url, string titulo, string? imagem, string? fonte)
+    public IActionResult Externa(string url, string titulo, string? imagem, string? fonte, string? subtexto, DateTime? data)
     {
         if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(titulo))
         {
             return NotFound();
         }
 
+        var noticiasRelacionadas = _extratorNoticias.ObterTodasNoticias()
+            .Where(n => n.Fonte == fonte && n.Url != url)
+            .Take(3)
+            .ToList();
+
         var viewModel = new GiroLerViewModel
         {
             Titulo = titulo,
+            SubTexto = subtexto,
             ImagemCapa = imagem,
             FonteNoticiaUrl = url,
             CategoriaNome = fonte,
-            ProdutosLoja = ProdutosAfiliadosMock.Produtos.Take(4).ToList()
+            DataExtracao = data,
+            ProdutosLoja = ProdutosAfiliadosMock.Produtos.Take(4).ToList(),
+            NoticiasRelacionadas = noticiasRelacionadas
         };
 
         return View("Ler", viewModel);
     }
 }
+
 

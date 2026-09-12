@@ -8,8 +8,12 @@ namespace DiarioDoCoelho.ViewModels;
 public class GiroLerViewModel
 {
     public string Titulo { get; set; } = string.Empty;
+    public string? SubTexto { get; set; }
     public string? ImagemCapa { get; set; }
     public string FonteNoticiaUrl { get; set; } = string.Empty;
     public string? CategoriaNome { get; set; }
+    public DateTime? DataExtracao { get; set; }
     public List<ProdutoAfiliadoViewModel> ProdutosLoja { get; set; } = new();
+    public List<NoticiaCoelho> NoticiasRelacionadas { get; set; } = new();
 }
+

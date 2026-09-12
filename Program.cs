@@ -15,7 +15,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ExtratorNoticiasService>();
-builder.Services.AddHttpClient<TabelaCampeonatoService>();
+builder.Services.AddScoped<ExtratorClassificacaoService>();
+builder.Services.AddScoped<ExtratorPartidasService>();
 
 var app = builder.Build();
 

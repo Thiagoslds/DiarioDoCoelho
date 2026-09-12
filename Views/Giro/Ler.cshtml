@@ -13,48 +13,74 @@
 
 <div class="row justify-content-center">
   <div class="col-12 col-lg-9">
-    <div class="card coelho-card">
-      <div class="row g-0 align-items-center">
-        @if (!string.IsNullOrEmpty(Model.ImagemCapa))
-        {
-          <div class="col-12 col-md-5">
-            <img src="@Model.ImagemCapa" alt="@Model.Titulo" class="img-fluid rounded-start" style="width:100%; height:100%; object-fit:cover; max-height:320px;" onerror="this.src='/img/placeholder-america.png'" />
-          </div>
-        }
-        <div class="@(!string.IsNullOrEmpty(Model.ImagemCapa) ? "col-12 col-md-7" : "col-12")">
-          <div class="card-body">
-            <h1 class="mb-0 fs-4">@Model.Titulo</h1>
+    <span class="coelho-badge mb-2" data-cor="verde">@(Model.CategoriaNome ?? nomeFonte)</span>
+    <h1 class="mb-2">@Model.Titulo</h1>
+
+    @if (!string.IsNullOrEmpty(Model.SubTexto))
+    {
+      <p class="lead text-muted mb-2">@Model.SubTexto</p>
+    }
+
+    @if (Model.DataExtracao.HasValue)
+    {
+      <p class="text-muted small mb-4">
+        <i class="fa-regular fa-clock"></i> @Model.DataExtracao.Value.ToString("dd/MM/yyyy 'às' HH:mm")
+      </p>
+    }
+
+    <div class="row g-3 align-items-stretch mb-4">
+      @if (!string.IsNullOrEmpty(Model.ImagemCapa))
+      {
+        <div class="col-12 col-md-7">
+          <img src="@Model.ImagemCapa" alt="@Model.Titulo" class="img-fluid rounded w-100 h-100" style="object-fit:cover; max-height:340px;" onerror="this.src='/img/placeholder-america.png'" />
+        </div>
+      }
+      @if (Model.ProdutosLoja.Any())
+      {
+        var produtoDestaque = Model.ProdutosLoja.First();
+        <div class="@(!string.IsNullOrEmpty(Model.ImagemCapa) ? "col-12 col-md-5" : "col-12 col-md-6 mx-auto")">
+          <div class="card h-100 shadow-sm">
+            <img src="@produtoDestaque.ImagemUrl" class="card-img-top" alt="@produtoDestaque.Nome" style="object-fit:cover; height:180px;" />
+            <div class="card-body d-flex flex-column text-center">
+              <span class="badge bg-secondary align-self-center mb-2">Loja do Coelho</span>
+              <p class="card-text small mb-2">@produtoDestaque.Nome</p>
+              <a href="@produtoDestaque.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="btn btn-sm btn-coelho-primary mt-auto">Ver oferta</a>
+            </div>
           </div>
         </div>
-      </div>
+      }
     </div>
 
-    @if (Model.ProdutosLoja.Any())
+    <div class="text-center my-4">
+      <a href="@Model.FonteNoticiaUrl" target="_blank" rel="nofollow noopener" class="btn btn-coelho-primary btn-lg px-4 py-3">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i> Continuar lendo no site de @nomeFonte
+      </a>
+    </div>
+
+    <partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Banner (728x90)" }' />
+
+    @if (Model.NoticiasRelacionadas.Any())
     {
-      <h4 class="text-coelho-verde mt-5 mb-3"><i class="fa-solid fa-shirt"></i> Vitrine da Loja do Coelho</h4>
-      <div class="row row-cols-2 row-cols-md-3 g-3 mb-4">
-        @foreach (var produto in Model.ProdutosLoja.Take(3))
+      <h4 class="text-coelho-verde mt-5 mb-3"><i class="fa-solid fa-newspaper"></i> Mais notícias de @nomeFonte</h4>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mb-4">
+        @foreach (var relacionada in Model.NoticiasRelacionadas.Take(3))
         {
           <div class="col">
-            <div class="card h-100 shadow-sm">
-              <img src="@produto.ImagemUrl" class="card-img-top" alt="@produto.Nome" style="object-fit:cover; height:140px;" />
-              <div class="card-body d-flex flex-column p-2">
-                <p class="card-text small mb-2">@produto.Nome</p>
-                <a href="@produto.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="btn btn-sm btn-coelho-primary mt-auto">Ver oferta</a>
+            <a href="@Url.Action("Externa", "Giro", new { url = relacionada.Url, titulo = relacionada.Titulo, imagem = relacionada.ImagemUrl, fonte = relacionada.Fonte, subtexto = relacionada.SubTexto, data = relacionada.DataExtracao })" class="text-decoration-none">
+              <div class="card coelho-card-externa h-100">
+                <img src="@relacionada.ImagemUrl" alt="@relacionada.Titulo" class="coelho-card-externa-img" onerror="this.src='/img/placeholder-america.png'" />
+                <div class="card-body p-2">
+                  <span class="coelho-badge coelho-badge-sm mb-2" data-cor="verde">@relacionada.Fonte</span>
+                  <h6 class="card-title coelho-card-externa-titulo">@relacionada.Titulo</h6>
+                  <p class="card-text mb-0"><small class="text-muted">@relacionada.DataExtracao.ToString("dd/MM/yyyy HH:mm")</small></p>
+                </div>
               </div>
-            </div>
+            </a>
           </div>
         }
       </div>
     }
 
-    <div class="text-center my-4">
-      <a href="@Model.FonteNoticiaUrl" class="btn btn-coelho-primary btn-lg px-4 py-3">
-        <i class="fa-solid fa-arrow-up-right-from-square"></i> Continuar lendo no site de @nomeFonte
-      </a>
-    </div>
-
     <a asp-controller="Home" asp-action="Index" class="d-inline-block mb-4 small text-coelho-verde">&larr; Voltar para a Home</a>
   </div>
 </div>
-

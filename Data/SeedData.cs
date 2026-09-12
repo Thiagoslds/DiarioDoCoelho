@@ -50,119 +50,36 @@ public static class SeedData
     /// </summary>
     private static async Task SeedNoticiasFicticiasAsync(ApplicationDbContext context)
     {
-        if (await context.Posts.AnyAsync())
+        /*if (await context.Posts.AnyAsync())
         {
             return;
-        }
+        }*/
 
         var categorias = await context.Categorias.ToDictionaryAsync(c => c.Nome, c => c.Id);
 
         var posts = new List<Post>
         {
-            new()
-            {
-                TipoPost = TipoPost.Noticia,
-                Titulo = "América vence de virada e assume liderança do grupo",
-                Resumo = "Coelho buscou o resultado no segundo tempo com gols de Sassá e Renato após sair atrás no placar.",
-                Conteudo = "<p>O América Futebol Clube fez um grande segundo tempo neste domingo e virou o placar contra o adversário, assumindo a liderança do grupo na competição. A equipe comandada pela comissão técnica mostrou personalidade mesmo saindo atrás no marcador.</p><p>Com a vitória, o Coelho chega a 18 pontos e mantém a invencibilidade em casa nesta temporada.</p>",
-                DataPublicacao = DateTime.Now.AddHours(-3),
-                Slug = "america-vence-de-virada-lideranca-grupo",
-                ImagemCapa = "/img/xicara.webp",
-                FonteNoticiaUrl = "https://ge.globo.com/mg/futebol/times/america-mg/",
-                CategoriaId = categorias.GetValueOrDefault("Últimas Notícias", 1)
-            },
-            new()
-            {
-                TipoPost = TipoPost.Noticia,
-                Titulo = "Diretoria confirma três reforços para a próxima janela",
-                Resumo = "Clube acerta contratação de um lateral, um volante e um atacante para reforçar o elenco na sequência da temporada.",
-                Conteudo = "<p>A diretoria do América anunciou a chegada de três reforços para a próxima janela de transferências. Os nomes ainda não foram revelados oficialmente, mas a expectativa é de anúncios nos próximos dias.</p><p>O planejamento visa reforçar o elenco para as decisões do segundo semestre.</p>",
-                DataPublicacao = DateTime.Now.AddDays(-1),
-                Slug = "diretoria-confirma-tres-reforcos-proxima-janela",
-                ImagemCapa = "/img/xicara.webp",
-                FonteNoticiaUrl = "https://www.ogol.com.br/",
-                CategoriaId = categorias.GetValueOrDefault("Mercado da Bola", 2)
-            },
-            new()
-            {
-                TipoPost = TipoPost.Noticia,
-                Titulo = "Categoria de base revela nova joia da Toca da Raposa Alviverde",
-                Resumo = "Meia de 17 anos chama atenção e já treina com o time principal sob o olhar da comissão técnica.",
-                Conteudo = "<p>Mais um talento da base do América desperta interesse da comissão técnica do time principal. O jovem meia de 17 anos vem se destacando nas competições de base e já participou de treinos com o elenco profissional.</p><p>A diretoria aposta na formação de base como um dos pilares do projeto esportivo do clube.</p>",
-                DataPublicacao = DateTime.Now.AddDays(-4),
-                Slug = "categoria-de-base-revela-nova-joia",
-                ImagemCapa = "/img/xicara.webp",
-                FonteNoticiaUrl = "https://www.uol.com.br/esporte/futebol/",
-                CategoriaId = categorias.GetValueOrDefault("DNA Formador", 4)
-            },
-            new()
-            {
-                TipoPost = TipoPost.Noticia,
-                Titulo = "Torcida lota as Arquibancadas para acompanhar treino aberto",
-                Resumo = "Milhares de torcedores compareceram ao treino aberto realizado no Independência nesta semana.",
-                Conteudo = "<p>O clima de decisão já toma conta da torcida americana. Um treino aberto realizado no estádio Independência reuniu milhares de torcedores que foram prestigiar o elenco antes da rodada decisiva.</p><p>Jogadores e comissão técnica agradeceram o apoio e prometeram retribuir dentro de campo.</p>",
-                DataPublicacao = DateTime.Now.AddDays(-6),
-                Slug = "torcida-lota-arquibancadas-treino-aberto",
-                ImagemCapa = "/img/xicara.webp",
-                FonteNoticiaUrl = "https://ge.globo.com/mg/futebol/times/america-mg/",
-                CategoriaId = categorias.GetValueOrDefault("Últimas Notícias", 1)
-            },
-            new()
-            {
-                TipoPost = TipoPost.Noticia,
-                Titulo = "Comissão técnica define escalação para o próximo confronto direto",
-                Resumo = "Treinador testa novo esquema tático durante a semana visando o confronto direto pelo acesso.",
-                Conteudo = "<p>A comissão técnica do América realizou treinos táticos durante a semana buscando ajustar o esquema para o próximo confronto direto na tabela.</p><p>A expectativa é de mudanças pontuais no time titular.</p>",
-                DataPublicacao = DateTime.Now.AddDays(-7),
-                Slug = "comissao-tecnica-define-escalacao-confronto-direto",
-                ImagemCapa = "/img/xicara.webp",
-                FonteNoticiaUrl = "https://ge.globo.com/mg/futebol/times/america-mg/",
-                CategoriaId = categorias.GetValueOrDefault("Últimas Notícias", 1)
-            },
-            new()
-            {
-                TipoPost = TipoPost.Noticia,
-                Titulo = "Atacante do América é sondado por clube da Série A",
-                Resumo = "Site especializado aponta interesse de equipe da elite do futebol brasileiro no artilheiro do Coelho.",
-                Conteudo = "<p>Segundo apuração de veículo especializado em mercado da bola, um clube da Série A do Campeonato Brasileiro monitora a situação do atacante do América.</p>",
-                DataPublicacao = DateTime.Now.AddDays(-8),
-                Slug = "atacante-do-america-e-sondado-serie-a",
-                ImagemCapa = "/img/xicara.webp",
-                FonteNoticiaUrl = "https://www.ogol.com.br/",
-                CategoriaId = categorias.GetValueOrDefault("Mercado da Bola", 2)
-            },
-            new()
-            {
-                TipoPost = TipoPost.Noticia,
-                Titulo = "América anuncia parceria com patrocinador máster para a temporada",
-                Resumo = "Nova parceria comercial deve reforçar o caixa do clube para a disputa das competições do ano.",
-                Conteudo = "<p>O América Futebol Clube oficializou nesta semana uma nova parceria comercial que deve reforçar o caixa do clube ao longo da temporada.</p>",
-                DataPublicacao = DateTime.Now.AddDays(-9),
-                Slug = "america-anuncia-parceria-patrocinador-master",
-                ImagemCapa = "/img/xicara.webp",
-                FonteNoticiaUrl = "https://www.uol.com.br/esporte/futebol/",
-                CategoriaId = categorias.GetValueOrDefault("Últimas Notícias", 1)
-            },
+
             new()
             {
                 TipoPost = TipoPost.Artigo,
-                Titulo = "Análise: o que precisa melhorar na saída de bola do Coelho",
-                Resumo = "Colunista aponta os principais pontos táticos que o América ainda precisa ajustar para seguir na briga pelo acesso.",
-                Conteudo = "<p>Apesar dos bons resultados recentes, a saída de bola do América ainda apresenta fragilidades que podem custar caro contra adversários mais qualificados taticamente.</p><p>Neste texto, analisamos os principais pontos de atenção e como o time pode evoluir nas próximas rodadas.</p>",
-                DataPublicacao = DateTime.Now.AddDays(-2),
-                Slug = "analise-saida-de-bola-do-coelho",
-                ImagemCapa = "/img/xicara.webp",
+                Titulo = "O Salum acabou com o América",
+                Resumo = "De ano de maior faturamento ao flerte com a Série C: como a gestão centralizadora e a recusa da SAF afundaram o Coelho.",
+                Conteudo = "<p>O rebaixamento em 2023 não foi apenas um tropeço; foi um atestado de incompetência. Justamente no ano em que o América registrou o maior faturamento de sua história, a gestão conseguiu entregar uma das piores campanhas que o clube já viu na elite do futebol brasileiro.\r\n\r\nEm vez de uma correção de rota, o que se viu em 2024 foi a continuidade do desastre. O restante dos recursos foi dilapidado na montagem de um elenco que entregou uma campanha absolutamente pífia na Série B. Agora, o roteiro atinge seu ponto mais crítico: a equipe faz a pior campanha de sua história na Segundona, caminhando a passos largos para um trágico e humilhante rebaixamento à Série C.\r\n\r\nO pano de fundo de toda essa derrocada atende por um erro estratégico brutal: a recusa sistemática em negociar a SAF do América com investidores quando o clube estava em alta.\r\n\r\nÉ evidente que existem outros culpados espalhados pelos departamentos do clube nos últimos anos. O grande problema é que a estrutura é viciada: todos parecem atuar como meros capachos, omissos e subservientes às decisões de um único cidadão. O que estão fazendo com a instituição é um verdadeiro absurdo.</p>",
+                DataPublicacao = DateTime.Now,
+                Slug = "ssalum-acabou-america",
+                ImagemCapa = "/img/salum.jpg",
                 CategoriaId = categorias.GetValueOrDefault("Análise & Opinião", 3)
             },
             new()
             {
                 TipoPost = TipoPost.Artigo,
-                Titulo = "Opinião: o momento é de cautela, mas com otimismo",
-                Resumo = "Colunista defende que a torcida deve manter os pés no chão apesar da boa sequência de resultados.",
-                Conteudo = "<p>A sequência positiva de resultados anima a torcida do Coelho, mas é preciso cautela diante do que ainda vem pela frente na temporada.</p><p>Neste artigo, discutimos os motivos para otimismo moderado.</p>",
-                DataPublicacao = DateTime.Now.AddDays(-3),
-                Slug = "opiniao-momento-de-cautela-com-otimismo",
-                ImagemCapa = "/img/xicara.webp",
+                Titulo = "O Preço da Incompetência: Como a Diretoria Quebrou e Rebaixou o Coelho",
+                Resumo = "Da falsa promessa de responsabilidade financeira ao pânico iminente: o roteiro trágico que condena a temporada e o futuro do clube.",
+                Conteudo = "<p>A atual diretoria do América vem protagonizando uma verdadeira aula de como não gerir um clube de futebol. O roteiro desse desastre começou no início do ano, pautado por um forte — e ilusório — discurso de \"austeridade financeira\". Na prática, essa política resultou na montagem de um elenco absolutamente sofrível. O reflexo em campo não poderia ser pior: o time amarga a lanterna isolada, somando míseros 6 pontos em 16 rodadas, um aproveitamento inaceitável de apenas 12,5%.\r\n\r\nAgora, no momento em que o rebaixamento já se desenha como uma realidade praticamente selada, o desespero bateu à porta da administração. Em uma completa e atabalhoada inversão de rota, os dirigentes começam a abrir os cofres para gastar o que a instituição não tem, apostando as últimas fichas em reforços de qualidade, no mínimo, duvidosa.\r\n\r\nO saldo final dessa sequência de trapalhadas já é previsível. Além de encaminhar o rebaixamento da equipe com uma campanha vexatória, a diretoria vai entregar o clube completamente quebrado e com um nível de endividamento assustador para o ano que vem. É o retrato fiel de uma gestão amadora, que compromete não apenas o presente, mas o futuro da instituição.</p>",
+                DataPublicacao = DateTime.Now.AddDays(-1),
+                Slug = "diretoria-quebrou-america",
+                ImagemCapa = "/img/tres-patetas.png",
                 CategoriaId = categorias.GetValueOrDefault("Análise & Opinião", 3)
             },
             new()

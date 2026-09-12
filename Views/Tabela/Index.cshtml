@@ -113,8 +113,7 @@
         @foreach (var item in Model)
         {
           // Exemplo: se o ID do América-MG for 33 (verifique na API), aplica classe de destaque
-          var classeDestaque = item.Time.TimeId == 33 ? "time-destaque" : "";
-
+          var classeDestaque = item.Time.TimeId == 59897 ? "time-destaque" : "";
           <tr class="@classeDestaque">
             <td class="col-posicao">@item.Posicao</td>
             <td class="col-time">

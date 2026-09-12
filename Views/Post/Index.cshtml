@@ -32,7 +32,7 @@
         @foreach (var noticia in Model.NoticiasExternas)
         {
             <div class="col">
-                <a href="@Url.Action("Externa", "Giro", new { url = noticia.Url, titulo = noticia.Titulo, imagem = noticia.ImagemUrl, fonte = noticia.Fonte })" class="text-decoration-none">
+                <a href="@Url.Action("Externa", "Giro", new { url = noticia.Url, titulo = noticia.Titulo, imagem = noticia.ImagemUrl, fonte = noticia.Fonte, subtexto = noticia.SubTexto, data = noticia.DataExtracao })" class="text-decoration-none">
                     <div class="card coelho-card-externa h-100">
                         <img src="@noticia.ImagemUrl" alt="@noticia.Titulo" class="coelho-card-externa-img" onerror="this.src='/img/placeholder-america.png'" />
                         <div class="card-body p-2">

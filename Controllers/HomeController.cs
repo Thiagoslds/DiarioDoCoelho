@@ -1,17 +1,19 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using DiarioDoCoelho.Data;
 using DiarioDoCoelho.Models;
+using DiarioDoCoelho.Services;
 using DiarioDoCoelho.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace DiarioDoCoelho.Controllers;
 
 // Injeção de dependência via construtor primário (C# 12)
-public class HomeController(ApplicationDbContext context, ExtratorNoticiasService extratorNoticias) : Controller
+public class HomeController(ApplicationDbContext context, ExtratorNoticiasService extratorNoticias, ExtratorPartidasService extratorPartidas) : Controller
 {
     private readonly ApplicationDbContext _context = context;
     private readonly ExtratorNoticiasService _extratorNoticias = extratorNoticias;
+    private readonly ExtratorPartidasService _extratorPartidas = extratorPartidas;
 
     public async Task<IActionResult> Index()
     {
@@ -52,11 +54,8 @@ public class HomeController(ApplicationDbContext context, ExtratorNoticiasServic
             .OrderBy(j => j.DataHora)
             .ToListAsync();
 
-        var proximosJogos = jogosFuturos
-            .GroupBy(j => j.Categoria)
-            .Select(g => g.First())
-            .OrderBy(j => j.Categoria)
-            .ToList();
+        var partidaAnterior = _extratorPartidas.ObterPartidaAnteriorCBF();
+        var proximaPartida = _extratorPartidas.ObterProximaPartidaClube();
 
         var bannersAtivos = await _context.BannersAfiliados
             .Where(b => b.Ativo)
@@ -69,7 +68,8 @@ public class HomeController(ApplicationDbContext context, ExtratorNoticiasServic
         {
             PostDestaque = postDestaque,
             UltimosPosts = restantePosts,
-            ProximosJogos = proximosJogos,
+            PartidaAnterior = partidaAnterior,
+            ProximaPartida = proximaPartida,
             BannersAtivos = bannersAtivos,
             GiroNoticias = giroNoticias,
             Artigos = artigos,

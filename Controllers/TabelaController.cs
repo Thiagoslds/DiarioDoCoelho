@@ -5,18 +5,18 @@ namespace DiarioDoCoelho.Controllers
 {
     public class TabelaController : Controller
     {
-        private readonly TabelaCampeonatoService _tabelaService;
+        private readonly ExtratorClassificacaoService _extratorClassificacao;
 
-        public TabelaController(TabelaCampeonatoService tabelaService)
+        public TabelaController(ExtratorClassificacaoService extratorClassificacao)
         {
-            _tabelaService = tabelaService;
+            _extratorClassificacao = extratorClassificacao;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            // ID 10 geralmente refere-se ao Brasileirão Série A na API-Futebol.
-            // Troque caso o América-MG esteja disputando outro campeonato (ex: Série B ou Mineiro).
-            var tabela = await _tabelaService.ObterTabelaAsync(10);
+            // Busca a tabela atualizada direto da CBF usando o novo serviço
+            var tabela = _extratorClassificacao.ObterClassificacao();
+
             return View(tabela);
         }
     }
