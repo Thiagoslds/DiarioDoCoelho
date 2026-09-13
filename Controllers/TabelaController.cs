@@ -1,4 +1,5 @@
 ﻿using DiarioDoCoelho.Services;
+using DiarioDoCoelho.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DiarioDoCoelho.Controllers
@@ -6,18 +7,29 @@ namespace DiarioDoCoelho.Controllers
     public class TabelaController : Controller
     {
         private readonly ExtratorClassificacaoService _extratorClassificacao;
+        private readonly ExtratorPartidasService _extratorPartidas;
 
-        public TabelaController(ExtratorClassificacaoService extratorClassificacao)
+        public TabelaController(ExtratorClassificacaoService extratorClassificacao, ExtratorPartidasService extratorPartidas)
         {
             _extratorClassificacao = extratorClassificacao;
+            _extratorPartidas = extratorPartidas;
         }
 
         public IActionResult Index()
         {
-            // Busca a tabela atualizada direto da CBF usando o novo serviço
-            var tabela = _extratorClassificacao.ObterClassificacao();
+            var classificacao = _extratorClassificacao.ObterClassificacao();
 
-            return View(tabela);
+            // Recebe os 4 itens da Tupla atualizada
+            var (anterior, proximo, proximosJogos, jogosAnteriores) = _extratorPartidas.ObterJogosAmerica();
+
+            var viewModel = new TabelaIndexViewModel
+            {
+                Classificacao = classificacao,
+                ProximosJogos = proximosJogos,
+                JogosAnteriores = jogosAnteriores
+            };
+
+            return View(viewModel);
         }
     }
 }

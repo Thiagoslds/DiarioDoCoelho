@@ -1,0 +1,142 @@
+@model DiarioDoCoelho.ViewModels.DnaFormadorViewModel
+
+@{
+  ViewData["Title"] = "DNA Formador";
+}
+
+<div class="row justify-content-center">
+  <div class="col-12 col-md-10 col-lg-8">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-coelho-verde text-decoration-none">Início</a></li>
+        <li class="breadcrumb-item active" aria-current="page">DNA Formador</li>
+      </ol>
+    </nav>
+
+    <h1 class="text-coelho-verde mb-4"><i class="fa-solid fa-graduation-cap"></i> DNA Formador</h1>
+
+    <!-- Banner DNA Formador -->
+    <div class="mb-4 text-center">
+      <img src="~/img/banner-dna-formador.jpg" alt="DNA Formador" class="img-fluid rounded shadow-sm" />
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="card shadow-sm border-0 bg-light rounded-3 p-4 p-md-5 mb-5">
+      <p class="fs-5 lh-lg text-dark mb-0">
+        O "DNA Formador" do América é uma das metodologias de categoria de base mais respeitadas do país, unindo desenvolvimento técnico, tático e humano para revelar talentos que geram tanto retorno esportivo quanto financeiro ao clube. A solidez desse trabalho no CT Lanna Drumond é comprovada por um longo histórico de sucesso, projetando desde lendas do futebol brasileiro, como Tostão e Euller, até referências mundiais de diferentes gerações, a exemplo de Gilberto Silva, Fred, Danilo, Richarlison, e, mais recentemente, Arthur, com a maior venda da história do clube.
+      </p>
+    </div>
+
+    <!-- Bloco de Jogos: Última e Próxima Partida -->
+    <!-- Bloco de Jogos: Última e Próxima Partida -->
+    @if (Model.PartidaAnterior != null || Model.ProximaPartida != null)
+    {
+      <h3 class="text-coelho-verde mb-3 mt-5"><i class="fa-solid fa-calendar-days"></i> Calendário Sub-20</h3>
+      <div class="card coelho-proximo-jogo mb-5 shadow-sm border-0 bg-white rounded-3">
+        <div class="card-body p-4">
+          <div class="row align-items-center">
+
+            <!-- JOGO ANTERIOR -->
+            <div class="col-md-6 text-center border-md-end border-bottom border-md-bottom-0 pb-4 pb-md-0">
+              <span class="badge bg-secondary mb-3">Última Partida</span>
+              @if (Model.PartidaAnterior != null)
+              {
+                <p class="mb-3 text-muted small fw-bold">@Model.PartidaAnterior.Campeonato</p>
+
+                <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+                  <div class="text-end" style="width: 80px;">
+                    <img src="@Model.PartidaAnterior.EscudoMandante" onerror="this.onerror=null; this.src='@Model.PartidaAnterior.EscudoFallbackMandante';" alt="@Model.PartidaAnterior.Mandante" class="coelho-placar-escudo" style="width: 45px; height: 45px; object-fit: contain;" />
+                    <div class="small fw-bold mt-1 text-truncate d-none d-sm-block">@Model.PartidaAnterior.Mandante</div>
+                  </div>
+
+                  <div class="fw-bold fs-3 px-1">@Model.PartidaAnterior.PlacarMandante</div>
+                  <div class="text-muted fw-normal">X</div>
+                  <div class="fw-bold fs-3 px-1">@Model.PartidaAnterior.PlacarVisitante</div>
+
+                  <div class="text-start" style="width: 80px;">
+                    <img src="@Model.PartidaAnterior.EscudoVisitante" onerror="this.onerror=null; this.src='@Model.PartidaAnterior.EscudoFallbackVisitante';" alt="@Model.PartidaAnterior.Visitante" class="coelho-placar-escudo" style="width: 45px; height: 45px; object-fit: contain;" />
+                    <div class="small fw-bold mt-1 text-truncate d-none d-sm-block">@Model.PartidaAnterior.Visitante</div>
+                  </div>
+                </div>
+                <p class="mb-0 text-muted small"><i class="fa-regular fa-calendar me-1"></i> @Model.PartidaAnterior.DataHora</p>
+              }
+            </div>
+
+            <!-- PRÓXIMO JOGO -->
+            <div class="col-md-6 text-center pt-4 pt-md-0">
+              <span class="badge mb-3" style="background-color: #009e4f;">Próximo Jogo</span>
+              @if (Model.ProximaPartida != null)
+              {
+                <p class="mb-3 text-muted small fw-bold">@Model.ProximaPartida.Campeonato</p>
+
+                <div class="d-flex justify-content-center align-items-center gap-4 mb-3">
+                  <div class="text-end" style="width: 80px;">
+                    <img src="@Model.ProximaPartida.EscudoMandante" onerror="this.onerror=null; this.src='@Model.ProximaPartida.EscudoFallbackMandante';" alt="@Model.ProximaPartida.Mandante" class="coelho-placar-escudo" style="width: 45px; height: 45px; object-fit: contain;" />
+                    <div class="small fw-bold mt-1 text-truncate d-none d-sm-block">@Model.ProximaPartida.Mandante</div>
+                  </div>
+
+                  <div class="text-muted fw-bold fs-4">X</div>
+
+                  <div class="text-start" style="width: 80px;">
+                    <img src="@Model.ProximaPartida.EscudoVisitante" onerror="this.onerror=null; this.src='@Model.ProximaPartida.EscudoFallbackVisitante';" alt="@Model.ProximaPartida.Visitante" class="coelho-placar-escudo" style="width: 45px; height: 45px; object-fit: contain;" />
+                    <div class="small fw-bold mt-1 text-truncate d-none d-sm-block">@Model.ProximaPartida.Visitante</div>
+                  </div>
+                </div>
+                <p class="mb-0 text-muted small"><i class="fa-regular fa-calendar me-1"></i> @Model.ProximaPartida.DataHora</p>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+    <!-- Classificação Sub-20 -->
+    @if (Model.Classificacao.Any())
+    {
+      <h3 class="text-coelho-verde mb-3"><i class="fa-solid fa-list-ol"></i> Classificação do Campeonato</h3>
+      <div class="table-responsive mb-5 shadow-sm">
+        <table class="tabela-classificacao">
+          <thead>
+            <tr>
+              <th style="width: 50px;">POS</th>
+              <th style="text-align: left;">TIME</th>
+              <th>P</th>
+              <th>J</th>
+              <th>V</th>
+              <th>E</th>
+              <th>D</th>
+              <th>GP</th>
+              <th>GC</th>
+              <th>SG</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach (var item in Model.Classificacao)
+            {
+              var classeDestaque = item.Time.NomePopular.Contains("América") ? "time-destaque" : "";
+
+              <tr class="@classeDestaque">
+                <td class="col-posicao">@item.Posicao</td>
+                <td class="col-time">
+                  <img src="@item.Time.Escudo" alt="@item.Time.NomePopular" class="escudo-time" loading="lazy" />
+                  <span>@item.Time.NomePopular</span>
+                </td>
+                <td style="font-weight: bold;">@item.Pontos</td>
+                <td>@item.Jogos</td>
+                <td>@item.Vitorias</td>
+                <td>@item.Empates</td>
+                <td>@item.Derrotas</td>
+                <td>@item.GolsPro</td>
+                <td>@item.GolsContra</td>
+                <td>@item.SaldoGols</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <a asp-controller="Home" asp-action="Index" class="d-inline-block mb-4 small text-coelho-verde text-decoration-none fw-semibold">
+      &larr; Voltar para a Home
+    </a>
+  </div>
+</div>

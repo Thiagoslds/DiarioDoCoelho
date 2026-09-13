@@ -72,17 +72,5 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-    <script>
-        const quill = new Quill('#quill-editor', {
-            theme: 'snow',
-            placeholder: 'Escreva o conteúdo da notícia...'
-        });
-
-        const conteudoTextarea = document.getElementById('editor-conteudo');
-        quill.root.innerHTML = conteudoTextarea.value;
-
-        document.getElementById('form-post').addEventListener('submit', function () {
-            conteudoTextarea.value = quill.root.innerHTML;
-        });
-    </script>
+    <script src="~/js/admin-posts.js" asp-append-version="true"></script>
 }

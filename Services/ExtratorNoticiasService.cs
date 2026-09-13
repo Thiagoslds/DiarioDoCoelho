@@ -217,14 +217,22 @@ public class ExtratorNoticiasService
                 subTexto = WebUtility.HtmlDecode(subTextoNode.InnerText.Trim());
             }
 
-            // 2. Pega a Data e Horário Exatos
+            // 2. Pega a Data e Horário Exatos (Correção de Fuso)
             var timeNode = document.DocumentNode.SelectSingleNode("//time[@datetime]");
             if (timeNode != null)
             {
                 var dataTexto = timeNode.GetAttributeValue("datetime", "");
+
+                // Corta qualquer fuso horário (ex: "Z" ou "-03:00"), pegando apenas os primeiros 19 caracteres "yyyy-MM-ddTHH:mm:ss"
+                if (dataTexto.Length >= 19)
+                {
+                    dataTexto = dataTexto.Substring(0, 19);
+                }
+
                 if (DateTime.TryParse(dataTexto, out DateTime dataParseada))
                 {
-                    dataPublicacao = dataParseada.ToLocalTime();
+                    // Usa a hora literal, sem aplicar ToLocalTime() para evitar que o C# subtraia 3 horas
+                    dataPublicacao = dataParseada;
                 }
             }
         }

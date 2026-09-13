@@ -1,4 +1,14 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿// Rola a vitrine da Loja do Coelho um card por vez.
+function scrollLoja(direcao) {
+    const track = document.getElementById('lojaTrack');
+    if (!track) {
+        return;
+    }
 
-// Write your JavaScript code.
+    const card = track.querySelector('.coelho-loja-card');
+    if (card) {
+        // Pega a largura do card + o gap (1rem = 16px)
+        const cardWidth = card.offsetWidth + 16;
+        track.scrollBy({ left: direcao * cardWidth, behavior: 'smooth' });
+    }
+}

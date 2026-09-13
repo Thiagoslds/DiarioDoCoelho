@@ -17,6 +17,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ExtratorNoticiasService>();
 builder.Services.AddScoped<ExtratorClassificacaoService>();
 builder.Services.AddScoped<ExtratorPartidasService>();
+builder.Services.AddScoped<ExtratorSub20Service>();
 
 var app = builder.Build();
 

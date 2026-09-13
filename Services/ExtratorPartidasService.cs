@@ -1,5 +1,5 @@
-﻿using HtmlAgilityPack;
-using DiarioDoCoelho.ViewModels;
+﻿using DiarioDoCoelho.ViewModels;
+using HtmlAgilityPack;
 using System.Text.RegularExpressions;
 
 namespace DiarioDoCoelho.Services
@@ -13,93 +13,108 @@ namespace DiarioDoCoelho.Services
             _web = new HtmlWeb();
         }
 
-        public PartidaViewModel? ObterPartidaAnteriorCBF()
+        // Retorna o anterior, o próximo, e uma lista com 3 jogos para a classificação
+        // Modifique a assinatura do método para retornar 4 elementos na Tupla
+        public (PartidaViewModel? Anterior, PartidaViewModel? Proximo, List<PartidaViewModel> ProximosJogos, List<PartidaViewModel> JogosAnteriores) ObterJogosAmerica()
         {
+            var passados = new List<PartidaViewModel>();
+            var futuros = new List<PartidaViewModel>();
+
             try
             {
-                var document = _web.Load("https://www.cbf.com.br/futebol-brasileiro/times/campeonato-brasileiro/serie-b/2026/59897");
-                string htmlCru = document.Text;
+                var document = _web.Load("https://www.ogol.com.br/equipe/america-mineiro");
+                var rows = document.DocumentNode.SelectNodes("//table[contains(@class, 'zztable stats')]/tbody/tr[contains(@class, 'parent')]");
 
-                var regex = new Regex(@"\\""mandante\\"":\{.*?\\""nome\\"":\\""([^""]+)\\"".*?\\""gols\\"":\\""([^""]+)\\"".*?\\""visitante\\"":\{.*?\\""nome\\"":\\""([^""]+)\\"".*?\\""gols\\"":\\""([^""]+)\\"".*?\\""campeonato\\"":\\""([^""]+)\\"".*?\\""data\\"":\\""\s*([^""]+)\\"".*?\\""hora\\"":\\""([^""]+)\\""");
-
-                var match = regex.Match(htmlCru);
-
-                if (match.Success)
+                if (rows != null)
                 {
-                    string mandante = match.Groups[1].Value;
-                    string visitante = match.Groups[3].Value;
-
-                    return new PartidaViewModel
+                    foreach (var row in rows)
                     {
-                        Mandante = mandante,
-                        EscudoMandante = ObterCaminhoEscudo(mandante),
-                        PlacarMandante = match.Groups[2].Value,
-                        Visitante = visitante,
-                        EscudoVisitante = ObterCaminhoEscudo(visitante),
-                        PlacarVisitante = match.Groups[4].Value,
-                        Campeonato = match.Groups[5].Value,
-                        DataHora = $"{match.Groups[6].Value} às {match.Groups[7].Value}"
-                    };
+                        var tds = row.SelectNodes("td");
+                        if (tds == null || tds.Count < 9) continue;
+
+                        string dataUrl = tds[1].SelectSingleNode(".//a")?.GetAttributeValue("href", "") ?? "";
+                        string dataRaw = tds[1].InnerText.Trim(); // <-- AQUI ESTÁ A CORREÇÃO!
+                        string hora = tds[2].InnerText.Trim();
+                        string campeonato = tds[3].InnerText.Trim();
+                        string mandante = tds[4].InnerText.Trim();
+                        string resultado = tds[6].InnerText.Trim();
+                        string visitante = tds[8].InnerText.Trim();
+
+                        campeonato = Regex.Replace(campeonato, @"\r\n?|\n", "").Trim();
+
+                        // Usa a data raw (ex: "28/09") como plano B caso a URL falhe
+                        string dataFormatada = dataRaw;
+
+                        var matchData = Regex.Match(dataUrl, @"\/jogo\/(\d{4})-(\d{2})-(\d{2})");
+                        if (matchData.Success)
+                        {
+                            dataFormatada = $"{matchData.Groups[3].Value}/{matchData.Groups[2].Value}/{matchData.Groups[1].Value}";
+                        }
+
+                        // SUBSTITUIÇÃO DO NOME DO AMÉRICA
+                        mandante = mandante.Replace("América Mineiro", "América");
+                        visitante = visitante.Replace("América Mineiro", "América");
+
+                        string escudoMandanteOgol = "https://www.ogol.com.br" + tds[5].SelectSingleNode(".//img")?.GetAttributeValue("src", "");
+                        string escudoVisitanteOgol = "https://www.ogol.com.br" + tds[7].SelectSingleNode(".//img")?.GetAttributeValue("src", "");
+
+                        var partidaInfo = new PartidaViewModel
+                        {
+                            Campeonato = campeonato,
+                            Mandante = mandante,
+                            EscudoMandante = ObterCaminhoEscudo(mandante),
+                            EscudoFallbackMandante = string.IsNullOrEmpty(escudoMandanteOgol) ? GerarFallbackAvatar(mandante) : escudoMandanteOgol,
+                            Visitante = visitante,
+                            EscudoVisitante = ObterCaminhoEscudo(visitante),
+                            EscudoFallbackVisitante = string.IsNullOrEmpty(escudoVisitanteOgol) ? GerarFallbackAvatar(visitante) : escudoVisitanteOgol,
+                            DataHora = $"{dataFormatada} às {hora}"
+                        };
+
+                        var matchPlacar = Regex.Match(resultado, @"(\d+)\s*-\s*(\d+)");
+                        if (matchPlacar.Success)
+                        {
+                            partidaInfo.PlacarMandante = matchPlacar.Groups[1].Value;
+                            partidaInfo.PlacarVisitante = matchPlacar.Groups[2].Value;
+                            passados.Add(partidaInfo);
+                        }
+                        else
+                        {
+                            futuros.Add(partidaInfo);
+                        }
+                    }
                 }
-
-                return null;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro ao extrair partida anterior: {ex.Message}");
-                return null;
+                Console.WriteLine($"Erro ao extrair partidas do América: {ex.Message}");
             }
-        }
 
-        public PartidaViewModel? ObterProximaPartidaClube()
-        {
-            try
-            {
-                // Mantenha a URL do site da ESPN[cite: 13]
-                var document = _web.Load("https://www.espn.com.br/futebol/time/calendario/_/id/6154/america-mineiro");
+            futuros.Reverse();
 
-                var node = document.DocumentNode.SelectSingleNode("(//tbody[contains(@class, 'Table__TBODY')]/tr)[1]");
-                if (node == null) return null;
+            var proximo = futuros.FirstOrDefault();
+            var anterior = passados.FirstOrDefault();
 
-                var tds = node.SelectNodes("td");
-                if (tds == null || tds.Count < 6) return null;
+            // PEGA OS 3 PRÓXIMOS E OS 3 ÚLTIMOS
+            var lista3Proximos = futuros.Take(3).ToList();
+            var lista3Anteriores = passados.Take(3).ToList();
 
-                string dataTexto = tds[0].InnerText.Trim();
-                string horaTexto = tds[4].InnerText.Trim();
-                string mandante = tds[1].InnerText.Trim();
-                string visitante = tds[3].InnerText.Trim();
-
-                return new PartidaViewModel
-                {
-                    Mandante = mandante,
-                    EscudoMandante = ObterCaminhoEscudo(mandante),
-                    Visitante = visitante,
-                    EscudoVisitante = ObterCaminhoEscudo(visitante),
-                    Campeonato = tds[5].InnerText.Trim(),
-                    DataHora = $"{dataTexto} às {horaTexto}"
-                };
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao extrair próxima partida: {ex.Message}");
-                return null;
-            }
+            return (anterior, proximo, lista3Proximos, lista3Anteriores);
         }
 
         private string ObterCaminhoEscudo(string nomeTime)
         {
-            // Remove acentos e padroniza para minúsculo
             var nomeNormalizado = nomeTime.ToLower()
                 .Replace("á", "a").Replace("ã", "a").Replace("é", "e")
                 .Replace("í", "i").Replace("ó", "o").Replace("ô", "o")
                 .Replace("ç", "c").Trim();
 
-            // Mapeamento dos nomes vindos da raspagem para o nome exato do arquivo local
+            if (nomeNormalizado.Contains("america")) return "/img/afc-escudos-site-branco-1.png";
+            if (nomeNormalizado.Contains("cruzeiro")) return "/img/cruzeiro_1.png";
+
             var mapaTimes = new Dictionary<string, string>
             {
-                { "america", "america-mineiro" },
                 { "athletic", "athletic" },
-                { "atletico goianiense", "atletico-goianiense" },
+                { "atletico", "atletico-mineiro" },
                 { "avai", "avai" },
                 { "botafogo", "botafogo-sp" },
                 { "ceara", "ceara" },
@@ -119,12 +134,19 @@ namespace DiarioDoCoelho.Services
                 { "vila nova", "vila-nova" }
             };
 
-            // Identifica qual chave do mapa está contida no nome do time raspado
-            var chaveEncontrada = mapaTimes.Keys.FirstOrDefault(k => nomeNormalizado.Contains(k)) ?? "america-mineiro";
-            string nomeArquivo = mapaTimes[chaveEncontrada];
+            var chaveEncontrada = mapaTimes.Keys.FirstOrDefault(k => nomeNormalizado.Contains(k));
+            if (chaveEncontrada != null)
+            {
+                return $"/img/brazil_{mapaTimes[chaveEncontrada]}_700x700.football-logos.cc.png";
+            }
 
-            // Retorna o caminho apontando para a pasta wwwroot/img (A extensão padrão .png foi adicionada. Ajuste para .jpg se necessário)
-            return $"/img/brazil_{nomeArquivo}_700x700.football-logos.cc.png";
+            return "/img/escudo-ausente.png";
+        }
+
+        private string GerarFallbackAvatar(string nomeTime)
+        {
+            if (nomeTime.Contains("América")) return "/img/afc-escudos-site-branco-1.png";
+            return $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(nomeTime)}&background=e6f2e6&color=009e4f&rounded=true&bold=true";
         }
     }
 }

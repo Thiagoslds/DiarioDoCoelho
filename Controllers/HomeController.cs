@@ -54,8 +54,7 @@ public class HomeController(ApplicationDbContext context, ExtratorNoticiasServic
             .OrderBy(j => j.DataHora)
             .ToListAsync();
 
-        var partidaAnterior = _extratorPartidas.ObterPartidaAnteriorCBF();
-        var proximaPartida = _extratorPartidas.ObterProximaPartidaClube();
+        var jogos = _extratorPartidas.ObterJogosAmerica();
 
         var bannersAtivos = await _context.BannersAfiliados
             .Where(b => b.Ativo)
@@ -68,8 +67,8 @@ public class HomeController(ApplicationDbContext context, ExtratorNoticiasServic
         {
             PostDestaque = postDestaque,
             UltimosPosts = restantePosts,
-            PartidaAnterior = partidaAnterior,
-            ProximaPartida = proximaPartida,
+            PartidaAnterior = jogos.Anterior,
+            ProximaPartida = jogos.Proximo,
             BannersAtivos = bannersAtivos,
             GiroNoticias = giroNoticias,
             Artigos = artigos,

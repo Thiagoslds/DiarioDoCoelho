@@ -9,7 +9,6 @@
     "Mercado da Bola" => "vermelho",
     "Análise & Opinião" => "vinho",
     "DNA Formador" => "retro",
-    "Baú do Coelho" => "retro",
     _ => "verde"
   };
 
@@ -19,21 +18,22 @@
 
 <!-- Bloco 1: O Destaque Factual (Carrossel) -->
 @{
-  var hasExterna = Model.NoticiasExternas.Any();
+  var noticiasDestaque = Model.NoticiasExternas.Take(2).ToList();
+  var hasNoticia1 = noticiasDestaque.Count > 0;
+  var hasNoticia2 = noticiasDestaque.Count > 1;
   var hasArtigo = Model.Artigos.Any();
-  var hasBau = Model.BauDoCoelho.Any();
-  var totalDestaques = (hasExterna ? 1 : 0) + (hasArtigo ? 1 : 0) + (hasBau ? 1 : 0);
+
+  var totalDestaques = (hasNoticia1 ? 1 : 0) + (hasNoticia2 ? 1 : 0) + (hasArtigo ? 1 : 0);
   bool isFirstSlide = true;
 }
 
 @if (totalDestaques > 0)
 {
-  <div id="carouselDestaquesFatuais" class="carousel slide mb-4" data-bs-ride="carousel">
+  <div id="carouselDestaquesFatuais" class="carousel slide mb-4 shadow-sm rounded overflow-hidden" data-bs-ride="carousel">
 
-    <!-- Indicadores -->
     @if (totalDestaques > 1)
     {
-      <div class="carousel-indicators">
+      <div class="carousel-indicators" style="z-index: 15;">
         @for (int i = 0; i < totalDestaques; i++)
         {
           <button type="button" data-bs-target="#carouselDestaquesFatuais" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @(i + 1)"></button>
@@ -41,20 +41,18 @@
       </div>
     }
 
-    <div class="carousel-inner rounded">
-
-      <!-- Slide 1: Última notícia dos sites parceiros (Extrator) -->
-      @if (hasExterna)
+    <div class="carousel-inner">
+      @if (hasNoticia1)
       {
-        var externa = Model.NoticiasExternas.First();
-        var imgExterna = string.IsNullOrEmpty(externa.ImagemUrl) ? "/img/jogador.jpg" : externa.ImagemUrl;
+        var externa1 = noticiasDestaque[0];
+        var imgExterna1 = string.IsNullOrEmpty(externa1.ImagemUrl) ? "/img/jogador.jpg" : externa1.ImagemUrl;
 
         <div class="carousel-item @(isFirstSlide ? "active" : "")">
-          <a href="@Url.Action("Externa", "Giro", new { url = externa.Url, titulo = externa.Titulo, subTexto = externa.SubTexto, dataPublicacao = externa.DataExtracao, imagem = externa.ImagemUrl, fonte = externa.Fonte })" class="coelho-manchete d-block text-decoration-none" style="background-image: url('@imgExterna');">
+          <a href="@Url.Action("Externa", "Giro", new { url = externa1.Url, titulo = externa1.Titulo, subTexto = externa1.SubTexto, dataPublicacao = externa1.DataExtracao, imagem = externa1.ImagemUrl, fonte = externa1.Fonte })" class="coelho-manchete d-block text-decoration-none" style="background-image: url('@imgExterna1'); position: relative; z-index: 1;">
             <div class="coelho-manchete-overlay">
-              <span class="coelho-badge mb-2" data-cor="verde">@externa.Fonte</span>
-              <h1 class="coelho-manchete-titulo">@externa.Titulo</h1>
-              <p class="coelho-manchete-resumo d-none d-md-block">@externa.SubTexto</p>
+              <span class="coelho-badge mb-2" data-cor="verde">@externa1.Fonte</span>
+              <h1 class="coelho-manchete-titulo">@externa1.Titulo</h1>
+              <p class="coelho-manchete-resumo d-none d-md-block">@externa1.SubTexto</p>
               <span class="coelho-manchete-cta">Leia a matéria completa &rarr;</span>
             </div>
           </a>
@@ -62,14 +60,31 @@
         isFirstSlide = false;
       }
 
-      <!-- Slide 2: Última notícia de Artigos e Opiniões -->
+      @if (hasNoticia2)
+      {
+        var externa2 = noticiasDestaque[1];
+        var imgExterna2 = string.IsNullOrEmpty(externa2.ImagemUrl) ? "/img/jogador.jpg" : externa2.ImagemUrl;
+
+        <div class="carousel-item @(isFirstSlide ? "active" : "")">
+          <a href="@Url.Action("Externa", "Giro", new { url = externa2.Url, titulo = externa2.Titulo, subTexto = externa2.SubTexto, dataPublicacao = externa2.DataExtracao, imagem = externa2.ImagemUrl, fonte = externa2.Fonte })" class="coelho-manchete d-block text-decoration-none" style="background-image: url('@imgExterna2'); position: relative; z-index: 1;">
+            <div class="coelho-manchete-overlay">
+              <span class="coelho-badge mb-2" data-cor="verde">@externa2.Fonte</span>
+              <h1 class="coelho-manchete-titulo">@externa2.Titulo</h1>
+              <p class="coelho-manchete-resumo d-none d-md-block">@externa2.SubTexto</p>
+              <span class="coelho-manchete-cta">Leia a matéria completa &rarr;</span>
+            </div>
+          </a>
+        </div>
+        isFirstSlide = false;
+      }
+
       @if (hasArtigo)
       {
         var artigo = Model.Artigos.First();
         var imgArtigo = string.IsNullOrEmpty(artigo.ImagemCapa) ? "/img/jogador.jpg" : artigo.ImagemCapa;
 
         <div class="carousel-item @(isFirstSlide ? "active" : "")">
-          <a href="@LinkPost(artigo)" class="coelho-manchete d-block text-decoration-none" style="background-image: url('@imgArtigo');">
+          <a href="@LinkPost(artigo)" class="coelho-manchete d-block text-decoration-none" style="background-image: url('@imgArtigo'); position: relative; z-index: 1;">
             <div class="coelho-manchete-overlay">
               <span class="coelho-badge mb-2" data-cor="@CorCategoria(artigo.Categoria?.Nome)">@(artigo.Categoria?.Nome ?? "Artigo")</span>
               <h1 class="coelho-manchete-titulo">@artigo.Titulo</h1>
@@ -78,30 +93,9 @@
             </div>
           </a>
         </div>
-        isFirstSlide = false;
-      }
-
-      <!-- Slide 3: Última notícia do Baú do Coelho -->
-      @if (hasBau)
-      {
-        var bau = Model.BauDoCoelho.First();
-        var imgBau = string.IsNullOrEmpty(bau.ImagemCapa) ? "/img/jogador.jpg" : bau.ImagemCapa;
-
-        <div class="carousel-item @(isFirstSlide ? "active" : "")">
-          <a href="@LinkPost(bau)" class="coelho-manchete d-block text-decoration-none" style="background-image: url('@imgBau');">
-            <div class="coelho-manchete-overlay">
-              <span class="coelho-badge mb-2" data-cor="@CorCategoria(bau.Categoria?.Nome)">@(bau.Categoria?.Nome ?? "Baú do Coelho")</span>
-              <h1 class="coelho-manchete-titulo">@bau.Titulo</h1>
-              <p class="coelho-manchete-resumo d-none d-md-block">@bau.Resumo</p>
-              <span class="coelho-manchete-cta">Leia a matéria completa &rarr;</span>
-            </div>
-          </a>
-        </div>
-        isFirstSlide = false;
       }
     </div>
 
-    <!-- Controles do Carrossel (Setas) -->
     @if (totalDestaques > 1)
     {
       <button class="carousel-control-prev" type="button" data-bs-target="#carouselDestaquesFatuais" data-bs-slide="prev">
@@ -117,7 +111,6 @@
 }
 else
 {
-  <!-- Fallback caso não haja nenhuma notícia em nenhum dos 3 blocos -->
   <section class="coelho-hero mb-4">
     <span class="coelho-hero-badge">🐰 Diário do Coelho</span>
     <h1>Tudo sobre o América em um só lugar</h1>
@@ -126,16 +119,7 @@ else
   </section>
 }
 
-
 <partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Banner (728x90)" }' />
-@{
-  string NomeCategoriaJogo(DiarioDoCoelho.Models.CategoriaJogo categoria) => categoria switch
-  {
-    DiarioDoCoelho.Models.CategoriaJogo.Sub20 => "Sub-20",
-    DiarioDoCoelho.Models.CategoriaJogo.Sub17 => "Sub-17",
-    _ => "Profissional"
-  };
-}
 
 <!-- Bloco 2: O Placar e o Contexto Imediato -->
 @if (Model.PartidaAnterior != null || Model.ProximaPartida != null)
@@ -144,57 +128,48 @@ else
     <div class="card-body p-4">
       <div class="row align-items-center">
 
-        <!-- JOGO ANTERIOR -->
         <div class="col-md-6 text-center border-md-end border-bottom border-md-bottom-0 pb-4 pb-md-0">
           <span class="badge bg-secondary mb-3">Última Partida</span>
           @if (Model.PartidaAnterior != null)
           {
             <p class="mb-3 text-muted small fw-bold">@Model.PartidaAnterior.Campeonato</p>
-
             <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
-              <div class="text-end">
+              <div class="text-end" style="width: 80px;">
                 <img src="@Model.PartidaAnterior.EscudoMandante" alt="@Model.PartidaAnterior.Mandante" class="coelho-placar-escudo" style="width: 45px; height: 45px; object-fit: contain;" />
-                <div class="small fw-bold mt-1 d-none d-sm-block">@Model.PartidaAnterior.Mandante</div>
+                <div class="small fw-bold mt-1 text-truncate d-none d-sm-block" title="@Model.PartidaAnterior.Mandante">@Model.PartidaAnterior.Mandante</div>
               </div>
-
-              <div class="fw-bold fs-3 px-2">@Model.PartidaAnterior.PlacarMandante</div>
+              <div class="fw-bold fs-3 px-1">@Model.PartidaAnterior.PlacarMandante</div>
               <div class="text-muted fw-normal">X</div>
-              <div class="fw-bold fs-3 px-2">@Model.PartidaAnterior.PlacarVisitante</div>
-
-              <div class="text-start">
+              <div class="fw-bold fs-3 px-1">@Model.PartidaAnterior.PlacarVisitante</div>
+              <div class="text-start" style="width: 80px;">
                 <img src="@Model.PartidaAnterior.EscudoVisitante" alt="@Model.PartidaAnterior.Visitante" class="coelho-placar-escudo" style="width: 45px; height: 45px; object-fit: contain;" />
-                <div class="small fw-bold mt-1 d-none d-sm-block">@Model.PartidaAnterior.Visitante</div>
+                <div class="small fw-bold mt-1 text-truncate d-none d-sm-block" title="@Model.PartidaAnterior.Visitante">@Model.PartidaAnterior.Visitante</div>
               </div>
             </div>
             <p class="mb-0 text-muted small"><i class="fa-regular fa-calendar me-1"></i> @Model.PartidaAnterior.DataHora</p>
           }
         </div>
 
-        <!-- PRÓXIMO JOGO -->
         <div class="col-md-6 text-center pt-4 pt-md-0">
           <span class="badge mb-3" style="background-color: #009e4f;">Próximo Jogo</span>
           @if (Model.ProximaPartida != null)
           {
             <p class="mb-3 text-muted small fw-bold">@Model.ProximaPartida.Campeonato</p>
-
             <div class="d-flex justify-content-center align-items-center gap-4 mb-3">
-              <div class="text-end">
+              <div class="text-end" style="width: 80px;">
                 <img src="@Model.ProximaPartida.EscudoMandante" alt="@Model.ProximaPartida.Mandante" class="coelho-placar-escudo" style="width: 45px; height: 45px; object-fit: contain;" />
-                <div class="small fw-bold mt-1 d-none d-sm-block">@Model.ProximaPartida.Mandante</div>
+                <div class="small fw-bold mt-1 text-truncate d-none d-sm-block" title="@Model.ProximaPartida.Mandante">@Model.ProximaPartida.Mandante</div>
               </div>
-
-              <div class="text-muted fw-bold fs-4">X</div>
-
-              <div class="text-start">
+              <div class="text-muted fw-bold fs-4 px-2">X</div>
+              <div class="text-start" style="width: 80px;">
                 <img src="@Model.ProximaPartida.EscudoVisitante" alt="@Model.ProximaPartida.Visitante" class="coelho-placar-escudo" style="width: 45px; height: 45px; object-fit: contain;" />
-                <div class="small fw-bold mt-1 d-none d-sm-block">@Model.ProximaPartida.Visitante</div>
+                <div class="small fw-bold mt-1 text-truncate d-none d-sm-block" title="@Model.ProximaPartida.Visitante">@Model.ProximaPartida.Visitante</div>
               </div>
             </div>
             <p class="mb-0 text-muted small"><i class="fa-regular fa-calendar me-1"></i> @Model.ProximaPartida.DataHora</p>
           }
         </div>
       </div>
-
       <div class="text-center mt-4 pt-3 border-top">
         <a asp-controller="Tabela" asp-action="Index" class="btn btn-outline-success btn-sm fw-bold px-4">
           <i class="fa-solid fa-list-ol me-2"></i> Ver Tabela do Campeonato Completa
@@ -203,7 +178,6 @@ else
     </div>
   </div>
 }
-
 
 @if (Model.BannersAtivos.Any())
 {
@@ -216,191 +190,272 @@ else
   }
 }
 
-<!-- Bloco 3: As Últimas do Giro (isca de notícias de parceiros) -->
-<div class="row">
-  <div class="col-12 col-lg-8">
-    @if (Model.NoticiasExternas.Any())
-    {
-      <h2 class="mb-3 text-coelho-verde">Últimas Notícias</h2>
+<!-- ====================================================================== -->
+<!-- ESTRUTURA PARA DESKTOP (PCs e Tablets Grandes) - Oculta no Mobile -->
+<!-- ====================================================================== -->
+<div class="d-none d-lg-block">
+  <div class="row">
+    <!-- Bloco de Notícias (6 Itens) -->
+    <div class="col-8">
+      @if (Model.NoticiasExternas.Any())
+      {
+        <h2 class="mb-3 text-coelho-verde">Últimas Notícias</h2>
+        <div class="row row-cols-2 row-cols-xl-3 g-3 mb-3">
+          @foreach (var noticia in Model.NoticiasExternas.Take(6))
+          {
+            <div class="col">
+              <a href="@Url.Action("Externa", "Giro", new { url = noticia.Url, titulo = noticia.Titulo, imagem = noticia.ImagemUrl, fonte = noticia.Fonte, subtexto = noticia.SubTexto, data = noticia.DataExtracao })" class="text-decoration-none">
+                <div class="card coelho-card-externa h-100">
+                  <img src="@noticia.ImagemUrl" alt="@noticia.Titulo" class="coelho-card-externa-img" onerror="this.src='/img/placeholder-america.png'" />
+                  <div class="card-body p-2">
+                    <span class="coelho-badge coelho-badge-sm mb-2" data-cor="verde">@noticia.Fonte</span>
+                    <h6 class="card-title coelho-card-externa-titulo">@noticia.Titulo</h6>
+                    <p class="card-text mb-0"><small class="text-muted">@noticia.DataExtracao.ToString("dd/MM/yyyy HH:mm")</small></p>
+                  </div>
+                </div>
+              </a>
+            </div>
+          }
+        </div>
+        <div class="text-center mt-2 mb-4">
+          <a asp-controller="Post" asp-action="Index" class="btn btn-coelho-primary px-4">Ver mais notícias &rarr;</a>
+        </div>
+      }
+    </div>
 
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-3 mb-3">
-        @foreach (var noticia in Model.NoticiasExternas.Take(6))
+    <!-- Sidebar Lateral -->
+    <div class="col-4">
+      @{
+        var bannerLateral = Model.BannersAtivos.FirstOrDefault(b => b.Posicao == "Lateral");
+      }
+      @if (bannerLateral is not null)
+      {
+        <a href="@bannerLateral.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="d-block mb-4 text-center">
+          <img src="@bannerLateral.ImagemUrl" alt="@bannerLateral.Titulo" class="img-fluid rounded" />
+        </a>
+      }
+
+      @{
+        var produtosSidebar = Model.ProdutosLoja.Take(2).ToList();
+      }
+      @if (produtosSidebar.Count > 0)
+      {
+        var produtoSidebar1 = produtosSidebar[0];
+        <div class="card coelho-sidebar-card mb-4">
+          <div class="card-header">Loja do Coelho</div>
+          <div class="card-body text-center">
+            <img src="@produtoSidebar1.ImagemUrl" alt="@produtoSidebar1.Nome" class="img-fluid rounded mb-2" style="max-height:160px;" />
+            <p class="mb-1 fw-semibold small">@produtoSidebar1.Nome</p>
+            <a href="@produtoSidebar1.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="btn btn-coelho-primary btn-sm">Comprar</a>
+          </div>
+        </div>
+      }
+
+      <div class="mb-4">
+        <partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Retângulo Médio (300x250)" }' />
+      </div>
+
+      @if (produtosSidebar.Count > 1)
+      {
+        var produtoSidebar2 = produtosSidebar[1];
+        <div class="card coelho-sidebar-card mb-4">
+          <div class="card-header">Loja do Coelho</div>
+          <div class="card-body text-center">
+            <img src="@produtoSidebar2.ImagemUrl" alt="@produtoSidebar2.Nome" class="img-fluid rounded mb-2" style="max-height:160px;" />
+            <p class="mb-1 fw-semibold small">@produtoSidebar2.Nome</p>
+            <a href="@produtoSidebar2.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="btn btn-coelho-primary btn-sm">Comprar</a>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="mb-4 mt-2">
+    <partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Banner (728x90)" }' />
+  </div>
+
+  <div class="mb-4 text-center">
+    <a asp-controller="DnaFormador" asp-action="Index" class="d-block">
+      <img src="~/img/banner-dna-formador.jpg" alt="DNA Formador" class="img-fluid rounded shadow-sm" />
+    </a>
+  </div>
+
+  @if (Model.Artigos.Any())
+  {
+    <section class="mb-5 mt-5">
+      <h2 class="mb-3 text-coelho-verde"><i class="fa-solid fa-pen-nib"></i> Artigos & Opiniões</h2>
+      <div class="row row-cols-2 g-3">
+        @foreach (var artigo in Model.Artigos)
         {
           <div class="col">
-            <a href="@Url.Action("Externa", "Giro", new { url = noticia.Url, titulo = noticia.Titulo, imagem = noticia.ImagemUrl, fonte = noticia.Fonte, subtexto = noticia.SubTexto, data = noticia.DataExtracao })" class="text-decoration-none">
-              <div class="card coelho-card-externa h-100">
-                <img src="@noticia.ImagemUrl" alt="@noticia.Titulo" class="coelho-card-externa-img" onerror="this.src='/img/placeholder-america.png'" />
-                <div class="card-body p-2">
-                  <span class="coelho-badge coelho-badge-sm mb-2" data-cor="verde">@noticia.Fonte</span>
-                  <h6 class="card-title coelho-card-externa-titulo">@noticia.Titulo</h6>
-                  <p class="card-text mb-0"><small class="text-muted">@noticia.DataExtracao.ToString("dd/MM/yyyy HH:mm")</small></p>
-                </div>
-              </div>
-            </a>
-          </div>
-        }
-      </div>
-
-      <div class="text-center mt-2 mb-4">
-        <a asp-controller="Post" asp-action="Index" class="btn btn-coelho-primary px-4">Ver mais notícias &rarr;</a>
-      </div>
-    }
-  </div>
-
-  <div class="col-12 col-lg-4">
-    @{
-      var bannerLateral = Model.BannersAtivos.FirstOrDefault(b => b.Posicao == "Lateral");
-    }
-    @if (bannerLateral is not null)
-    {
-      <a href="@bannerLateral.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="d-block mb-4 text-center">
-        <img src="@bannerLateral.ImagemUrl" alt="@bannerLateral.Titulo" class="img-fluid rounded" />
-      </a>
-    }
-
-    @{
-      var produtosSidebar = Model.ProdutosLoja.Take(2).ToList();
-    }
-    @if (produtosSidebar.Count > 0)
-    {
-      var produtoSidebar1 = produtosSidebar[0];
-      <div class="card coelho-sidebar-card mb-4">
-        <div class="card-header">Loja do Coelho</div>
-        <div class="card-body text-center">
-          <img src="@produtoSidebar1.ImagemUrl" alt="@produtoSidebar1.Nome" class="img-fluid rounded mb-2" style="max-height:160px;" />
-          <p class="mb-1 fw-semibold small">@produtoSidebar1.Nome</p>
-          <a href="@produtoSidebar1.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="btn btn-coelho-primary btn-sm">Comprar</a>
-        </div>
-      </div>
-    }
-
-    <partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Retângulo Médio (300x250)" }' />
-
-    @if (produtosSidebar.Count > 1)
-    {
-      var produtoSidebar2 = produtosSidebar[1];
-      <div class="card coelho-sidebar-card mb-4">
-        <div class="card-header">Loja do Coelho</div>
-        <div class="card-body text-center">
-          <img src="@produtoSidebar2.ImagemUrl" alt="@produtoSidebar2.Nome" class="img-fluid rounded mb-2" style="max-height:160px;" />
-          <p class="mb-1 fw-semibold small">@produtoSidebar2.Nome</p>
-          <a href="@produtoSidebar2.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="btn btn-coelho-primary btn-sm">Comprar</a>
-        </div>
-      </div>
-    }
-  </div>
-</div>
-
-<partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Banner (728x90)" }' />
-
-<!-- Banner DNA Formador -->
-<div class="mb-4 text-center">
-  <img src="~/img/banner-dna-formador.jpg" alt="DNA Formador" class="img-fluid rounded" />
-</div>
-
-<!-- Bloco 4: Artigos, Análises e Opiniões Pessoais -->
-@if (Model.Artigos.Any())
-{
-  <section class="mb-5 mt-5">
-    <h2 class="mb-3 text-coelho-verde"><i class="fa-solid fa-pen-nib"></i> Artigos & Opiniões</h2>
-    <div class="row row-cols-1 row-cols-md-2 g-3">
-      @foreach (var artigo in Model.Artigos)
-      {
-        <div class="col">
-          <div class="card coelho-card h-100">
-            @if (!string.IsNullOrEmpty(artigo.ImagemCapa))
-            {
-              <img src="@artigo.ImagemCapa" alt="@artigo.Titulo" class="card-img-top" style="object-fit:cover; height:180px;" />
-            }
-            <div class="card-body">
-              <span class="coelho-badge mb-2" data-cor="vinho">@artigo.Categoria?.Nome</span>
-              <h5 class="card-title">
-                <a asp-controller="Post" asp-action="Ler" asp-route-slug="@artigo.Slug" class="text-decoration-none">@artigo.Titulo</a>
-              </h5>
-              <p class="card-text text-muted small">@artigo.Resumo</p>
-            </div>
-          </div>
-        </div>
-      }
-    </div>
-    <div class="text-center mt-4">
-      <a asp-controller="Artigos" asp-action="Index" class="btn btn-coelho-primary px-4">Ver todos os artigos &rarr;</a>
-    </div>
-  </section>
-}
-
-<!-- Bloco 5: O Momento Nostalgia / História -->
-@if (Model.BauDoCoelho.Any())
-{
-  <section class="mb-5">
-    <h2 class="mb-3 text-coelho-verde"><i class="fa-solid fa-box-archive"></i> Baú do Coelho</h2>
-    <div class="row row-cols-1 row-cols-md-3 g-3">
-      @foreach (var historia in Model.BauDoCoelho)
-      {
-        <div class="col">
-          <div class="card coelho-card h-100">
-            @if (!string.IsNullOrEmpty(historia.ImagemCapa))
-            {
-              <img src="@historia.ImagemCapa" alt="@historia.Titulo" class="card-img-top" style="object-fit:cover; height:160px;" />
-            }
-            <div class="card-body d-flex flex-column">
-              <h6 class="card-title">
-                <a asp-controller="Post" asp-action="Ler" asp-route-slug="@historia.Slug" class="text-decoration-none">@historia.Titulo</a>
-              </h6>
-              <p class="card-text text-muted small flex-grow-1">@historia.Resumo</p>
-              @if (!string.IsNullOrEmpty(historia.ProdutoAfiliadoUrl))
+            <div class="card coelho-card h-100">
+              @if (!string.IsNullOrEmpty(artigo.ImagemCapa))
               {
-                <a href="@historia.ProdutoAfiliadoUrl" target="_blank" rel="nofollow sponsored noopener" class="btn btn-sm btn-coelho-outline mt-2">
-                  <i class="fa-solid fa-shirt"></i> Camisa retrô da época
-                </a>
+                <img src="@artigo.ImagemCapa" alt="@artigo.Titulo" class="card-img-top" style="object-fit:cover; height:180px;" />
               }
-            </div>
-          </div>
-        </div>
-      }
-    </div>
-    <div class="text-center mt-4">
-      <a asp-controller="Bau" asp-action="Index" class="btn btn-coelho-primary px-4">Explorar o Baú do Coelho &rarr;</a>
-    </div>
-  </section>
-}
-
-<!-- Bloco 6: A Loja do Coelho -->
-@if (Model.ProdutosLoja.Any())
-{
-  <section class="mb-4">
-    <h2 class="mb-3 text-coelho-verde"><i class="fa-solid fa-cart-shopping"></i> Loja do Coelho</h2>
-    <div id="coelhoLojaCarousel" class="carousel slide coelho-loja-carousel" data-bs-ride="carousel">
-      <div class="carousel-inner">
-        @for (var i = 0; i < Model.ProdutosLoja.Count; i++)
-        {
-          var item = Model.ProdutosLoja[i];
-          <div class="carousel-item @(i == 0 ? "active" : "")">
-            <div class="d-flex justify-content-center">
-              <div class="card shadow-sm" style="max-width: 320px;">
-                <img src="@item.ImagemUrl" class="card-img-top" alt="@item.Nome" style="object-fit:cover; height:220px;" />
-                <div class="card-body d-flex flex-column">
-                  <span class="badge bg-secondary align-self-start mb-2">@item.Loja</span>
-                  <h6 class="card-title">@item.Nome</h6>
-                  <p class="card-text text-muted small flex-grow-1">@item.Descricao</p>
-                  <a href="@item.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="btn btn-coelho-primary mt-auto">Comprar</a>
-                </div>
+              <div class="card-body">
+                <span class="coelho-badge mb-2" data-cor="vinho">@artigo.Categoria?.Nome</span>
+                <h5 class="card-title">
+                  <a asp-controller="Post" asp-action="Ler" asp-route-slug="@artigo.Slug" class="text-decoration-none">@artigo.Titulo</a>
+                </h5>
+                <p class="card-text text-muted small">@artigo.Resumo</p>
               </div>
             </div>
           </div>
         }
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#coelhoLojaCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Anterior</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#coelhoLojaCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Próximo</span>
-      </button>
+      <div class="text-center mt-4">
+        <a asp-controller="Artigos" asp-action="Index" class="btn btn-coelho-primary px-4">Ver todos os artigos &rarr;</a>
+      </div>
+    </section>
+  }
+
+  @if (Model.ProdutosLoja.Any())
+  {
+    <section class="mb-5">
+      <h2 class="mb-3 text-coelho-verde"><i class="fa-solid fa-cart-shopping"></i> Loja do Coelho</h2>
+      <div class="position-relative">
+        <div id="lojaTrackDesktop" class="coelho-loja-track pb-2 pt-2 px-1">
+          @foreach (var item in Model.ProdutosLoja)
+          {
+            <div class="coelho-loja-card card shadow-sm border-0">
+              <img src="@item.ImagemUrl" class="card-img-top" alt="@item.Nome" style="object-fit:cover; height:200px;" />
+              <div class="card-body d-flex flex-column text-center p-3">
+                <span class="badge bg-secondary align-self-center mb-2">@item.Loja</span>
+                <h6 class="card-title mb-1">@item.Nome</h6>
+                <p class="card-text text-muted small flex-grow-1 mb-3">@item.Descricao</p>
+                <a href="@item.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="btn btn-outline-success mt-auto fw-bold w-100">
+                  <i class="fa-solid fa-cart-arrow-down me-1"></i> Comprar
+                </a>
+              </div>
+            </div>
+          }
+        </div>
+        <button class="btn btn-success position-absolute top-50 start-0 translate-middle-y shadow" style="z-index: 10; border-radius: 50%; width: 40px; height: 40px; margin-left: -15px;" onclick="scrollLoja(-1, 'lojaTrackDesktop')">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button class="btn btn-success position-absolute top-50 end-0 translate-middle-y shadow" style="z-index: 10; border-radius: 50%; width: 40px; height: 40px; margin-right: -15px;" onclick="scrollLoja(1, 'lojaTrackDesktop')">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+      <div class="text-center mt-4">
+        <a asp-controller="Loja" asp-action="Index" class="btn btn-coelho-primary px-4">Ver Loja Completa &rarr;</a>
+      </div>
+    </section>
+  }
+</div>
+
+<!-- ====================================================================== -->
+<!-- ESTRUTURA PARA MOBILE (Celulares) - Oculta no Desktop                  -->
+<!-- ====================================================================== -->
+<div class="d-block d-lg-none">
+
+  <!-- 1. Notícias (Apenas 3) -->
+  @if (Model.NoticiasExternas.Any())
+  {
+    <h2 class="mb-3 text-coelho-verde">Últimas Notícias</h2>
+    <div class="row row-cols-1 g-3 mb-3">
+      @foreach (var noticia in Model.NoticiasExternas.Take(3))
+      {
+        <div class="col">
+          <a href="@Url.Action("Externa", "Giro", new { url = noticia.Url, titulo = noticia.Titulo, imagem = noticia.ImagemUrl, fonte = noticia.Fonte, subtexto = noticia.SubTexto, data = noticia.DataExtracao })" class="text-decoration-none">
+            <div class="card coelho-card-externa h-100">
+              <img src="@noticia.ImagemUrl" alt="@noticia.Titulo" class="coelho-card-externa-img" onerror="this.src='/img/placeholder-america.png'" />
+              <div class="card-body p-2">
+                <span class="coelho-badge coelho-badge-sm mb-2" data-cor="verde">@noticia.Fonte</span>
+                <h6 class="card-title coelho-card-externa-titulo">@noticia.Titulo</h6>
+                <p class="card-text mb-0"><small class="text-muted">@noticia.DataExtracao.ToString("dd/MM/yyyy HH:mm")</small></p>
+              </div>
+            </div>
+          </a>
+        </div>
+      }
     </div>
-    <div class="text-center mt-3">
-      <a asp-controller="Loja" asp-action="Index" class="btn btn-coelho-primary px-4">Ver Loja Completa &rarr;</a>
+    <div class="text-center mt-2 mb-4">
+      <a asp-controller="Post" asp-action="Index" class="btn btn-coelho-primary px-4 w-100">Ver mais notícias &rarr;</a>
     </div>
-  </section>
-}
+  }
+
+  <!-- 2. Loja do Coelho -->
+  @if (Model.ProdutosLoja.Any())
+  {
+    <section class="mb-4">
+      <h2 class="mb-3 text-coelho-verde"><i class="fa-solid fa-cart-shopping"></i> Loja do Coelho</h2>
+      <div class="position-relative">
+        <div id="lojaTrackMobile" class="coelho-loja-track pb-2 pt-2 px-1">
+          @foreach (var item in Model.ProdutosLoja)
+          {
+            <div class="coelho-loja-card card shadow-sm border-0">
+              <img src="@item.ImagemUrl" class="card-img-top" alt="@item.Nome" style="object-fit:cover; height:200px;" />
+              <div class="card-body d-flex flex-column text-center p-3">
+                <span class="badge bg-secondary align-self-center mb-2">@item.Loja</span>
+                <h6 class="card-title mb-1">@item.Nome</h6>
+                <p class="card-text text-muted small flex-grow-1 mb-3">@item.Descricao</p>
+                <a href="@item.LinkAfiliado" target="_blank" rel="nofollow sponsored noopener" class="btn btn-outline-success mt-auto fw-bold w-100">
+                  <i class="fa-solid fa-cart-arrow-down me-1"></i> Comprar
+                </a>
+              </div>
+            </div>
+          }
+        </div>
+        <button class="btn btn-success position-absolute top-50 start-0 translate-middle-y shadow" style="z-index: 10; border-radius: 50%; width: 40px; height: 40px; margin-left: -5px;" onclick="scrollLoja(-1, 'lojaTrackMobile')">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button class="btn btn-success position-absolute top-50 end-0 translate-middle-y shadow" style="z-index: 10; border-radius: 50%; width: 40px; height: 40px; margin-right: -5px;" onclick="scrollLoja(1, 'lojaTrackMobile')">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+      <div class="text-center mt-4">
+        <a asp-controller="Loja" asp-action="Index" class="btn btn-coelho-primary px-4 w-100">Ver Loja Completa &rarr;</a>
+      </div>
+    </section>
+  }
+
+  <!-- 3. AdSense Central -->
+  <div class="mb-4 mt-2">
+    <partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Banner (728x90)" }' />
+  </div>
+
+  <!-- 4. Banner DNA Formador -->
+  <div class="mb-4 text-center">
+    <a asp-controller="DnaFormador" asp-action="Index" class="d-block">
+      <img src="~/img/banner-dna-formador.jpg" alt="DNA Formador" class="img-fluid rounded shadow-sm" />
+    </a>
+  </div>
+
+  <!-- 5. AdSense Extra -->
+  <div class="mb-4 mt-2">
+    <partial name="_AdSenseSlot" view-data='new ViewDataDictionary(ViewData) { ["Tamanho"] = "Retângulo Médio (300x250)" }' />
+  </div>
+
+  <!-- 6. Artigos e Opiniões -->
+  @if (Model.Artigos.Any())
+  {
+    <section class="mb-5 mt-4">
+      <h2 class="mb-3 text-coelho-verde"><i class="fa-solid fa-pen-nib"></i> Artigos & Opiniões</h2>
+      <div class="row row-cols-1 g-3">
+        @foreach (var artigo in Model.Artigos)
+        {
+          <div class="col">
+            <div class="card coelho-card h-100">
+              @if (!string.IsNullOrEmpty(artigo.ImagemCapa))
+              {
+                <img src="@artigo.ImagemCapa" alt="@artigo.Titulo" class="card-img-top" style="object-fit:cover; height:180px;" />
+              }
+              <div class="card-body">
+                <span class="coelho-badge mb-2" data-cor="vinho">@artigo.Categoria?.Nome</span>
+                <h5 class="card-title">
+                  <a asp-controller="Post" asp-action="Ler" asp-route-slug="@artigo.Slug" class="text-decoration-none">@artigo.Titulo</a>
+                </h5>
+                <p class="card-text text-muted small">@artigo.Resumo</p>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="text-center mt-4">
+        <a asp-controller="Artigos" asp-action="Index" class="btn btn-coelho-primary px-4 w-100">Ver todos os artigos &rarr;</a>
+      </div>
+    </section>
+  }
+</div>

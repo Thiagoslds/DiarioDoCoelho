@@ -13,35 +13,51 @@ public static class ProdutosAfiliadosMock
     {
         new ProdutoAfiliadoViewModel
         {
-            Nome = "Manto I América 2024",
-            ImagemUrl = "/img/xicara.webp",
-            Descricao = "Camisa oficial titular do América, tecido leve e respirável.",
-            Loja = "Centauro",
-            LinkAfiliado = "https://www.centauro.com.br/busca?q=camisa%20america%20mg"
-        },
-        new ProdutoAfiliadoViewModel
-        {
-            Nome = "Manto II América 2024",
-            ImagemUrl = "/img/xicara.webp",
-            Descricao = "Segundo uniforme do Coelho, ideal para o dia a dia.",
+            Nome = "BANDEIRA AMÉRICA 2 PANOS 0,90 X 1,30M",
+            ImagemUrl = "/img/bandeira-america.jpg",
+            Descricao = "Bandeira Oficial do América, produzidas de acordo com as normas técnicas, seguindo padrões e medidas oficiais utilizando tecido 100% Poliéster.",
             Loja = "Amazon",
-            LinkAfiliado = "https://www.amazon.com.br/s?k=camisa+america+mineiro"
+            LinkAfiliado = "https://link.amazon/B0dxG1gua"
         },
         new ProdutoAfiliadoViewModel
         {
-            Nome = "Boné do América",
-            ImagemUrl = "/img/xicara.webp",
-            Descricao = "Boné oficial bordado com o escudo do Coelho.",
-            Loja = "Shopee",
-            LinkAfiliado = "https://shopee.com.br/search?keyword=bon%C3%A9%20america%20mineiro"
+            Nome = "Camisa América Treino Purple 2025",
+            ImagemUrl = "/img/camisa-treino-1.webp",
+            Descricao = "Camisa Oficial América Futebol Clube - MG - Temporada 2025 - TREINO - ROXA",
+            Loja = "Mercado Livre",
+            LinkAfiliado = "https://meli.la/1taqCQo"
         },
         new ProdutoAfiliadoViewModel
         {
-            Nome = "Caneca Coelho Campeão",
-            ImagemUrl = "/img/xicara.webp",
-            Descricao = "Caneca personalizada para o torcedor raiz do Coelho.",
-            Loja = "Shopee",
-            LinkAfiliado = "https://shopee.com.br/search?keyword=caneca%20america%20mineiro"
+            Nome = "Camisa América Retrô 1971 Verde e Preta",
+            ImagemUrl = "/img/camisa-retro1.jpg",
+            Descricao = "A camisa retrô do América, foi inspirada no modelo usado pelos atletas do Coelho em 1971.",
+            Loja = "Amazon",
+            LinkAfiliado = "https://link.amazon/B0caOZVVp"
+        },
+        new ProdutoAfiliadoViewModel
+        {
+            Nome = "Camisa América Volt 2025 Aquece Masculino",
+            ImagemUrl = "/img/camisa-treino-2.webp",
+            Descricao = "Produzida com fibras de garrafas PET recicladas e malha sem tingimento.",
+            Loja = "Mercado Livre",
+            LinkAfiliado = "https://meli.la/2NZ2G9i"
+        },
+        new ProdutoAfiliadoViewModel
+        {
+            Nome = "Camisa Goleiro América I 2024/25",
+            ImagemUrl = "/img/camisa-goleiro-1.webp",
+            Descricao = "Camisa Oficial América Futebol Clube - MG - Temporada 2024/25 - GOLEIRO JOGO I - LARANJA.",
+            Loja = "Mercado Livre",
+            LinkAfiliado = "https://meli.la/2UU8T52"
+        },
+        new ProdutoAfiliadoViewModel
+        {
+            Nome = "Camisa América Vintage Verde",
+            ImagemUrl = "/img/camisa-retro2.webp",
+            Descricao = "Camisa América Vintage Verde 100% Algodão",
+            Loja = "Mercado Livre",
+            LinkAfiliado = "https://meli.la/2geH9ju"
         }
     };
 }
