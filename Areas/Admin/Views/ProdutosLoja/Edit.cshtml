@@ -1,0 +1,63 @@
+@model DiarioDoCoelho.Models.ProdutoLoja
+
+@{
+    ViewData["Title"] = "Editar Produto";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Editar Produto da Loja</h6>
+    </div>
+    <div class="card-body">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Nome" class="form-label">Nome do Produto</label>
+                    <input asp-for="Nome" class="form-control" />
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Loja" class="form-label">Nome da Loja (ex: Amazon, Shopee)</label>
+                    <input asp-for="Loja" class="form-control" />
+                    <span asp-validation-for="Loja" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Descricao" class="form-label">Descrição Breve</label>
+                <textarea asp-for="Descricao" class="form-control" rows="2"></textarea>
+                <span asp-validation-for="Descricao" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ImagemUrl" class="form-label">URL da Imagem</label>
+                <input asp-for="ImagemUrl" class="form-control" placeholder="https://..." />
+                <span asp-validation-for="ImagemUrl" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="LinkAfiliado" class="form-label">Link de Afiliado</label>
+                <input asp-for="LinkAfiliado" class="form-control" placeholder="https://..." />
+                <span asp-validation-for="LinkAfiliado" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3 form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Ativo" /> Produto Ativo (Exibir no site)
+                </label>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

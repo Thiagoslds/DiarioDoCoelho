@@ -1,32 +1,27 @@
-﻿using DiarioDoCoelho.Services;
+using DiarioDoCoelho.Services;
 using DiarioDoCoelho.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DiarioDoCoelho.Controllers
 {
-    public class TabelaController : Controller
+    public class TabelaController(DiarioDoCoelho.Data.ApplicationDbContext context) : Controller
     {
-        private readonly ExtratorClassificacaoService _extratorClassificacao;
-        private readonly ExtratorPartidasService _extratorPartidas;
+        private readonly DiarioDoCoelho.Data.ApplicationDbContext _context = context;
 
-        public TabelaController(ExtratorClassificacaoService extratorClassificacao, ExtratorPartidasService extratorPartidas)
+        public async Task<IActionResult> Index()
         {
-            _extratorClassificacao = extratorClassificacao;
-            _extratorPartidas = extratorPartidas;
-        }
+            var dbClassificacao = await _context.DadosExtraidos.FirstOrDefaultAsync(d => d.Chave == "ClassificacaoGeral");
+            var classificacao = dbClassificacao != null ? System.Text.Json.JsonSerializer.Deserialize<List<ClassificacaoViewModel>>(dbClassificacao.ConteudoJson, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new() : new();
 
-        public IActionResult Index()
-        {
-            var classificacao = _extratorClassificacao.ObterClassificacao();
-
-            // Recebe os 4 itens da Tupla atualizada
-            var (anterior, proximo, proximosJogos, jogosAnteriores) = _extratorPartidas.ObterJogosAmerica();
+            var dbPartidas = await _context.DadosExtraidos.FirstOrDefaultAsync(d => d.Chave == "Partidas");
+            var partidas = dbPartidas != null ? System.Text.Json.JsonSerializer.Deserialize<DiarioDoCoelho.Controllers.HomeController.PartidaContainer>(dbPartidas.ConteudoJson, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }) : null;
 
             var viewModel = new TabelaIndexViewModel
             {
                 Classificacao = classificacao,
-                ProximosJogos = proximosJogos,
-                JogosAnteriores = jogosAnteriores
+                ProximosJogos = partidas?.ProximosJogos ?? new(),
+                JogosAnteriores = partidas?.JogosAnteriores ?? new()
             };
 
             return View(viewModel);

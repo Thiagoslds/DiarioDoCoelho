@@ -1,0 +1,41 @@
+@model DiarioDoCoelho.Models.ProdutoLoja
+
+@{
+    ViewData["Title"] = "Excluir Produto";
+}
+
+<div class="card shadow mb-4 border-bottom-danger">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-danger">Excluir Produto</h6>
+    </div>
+    <div class="card-body">
+        <h5 class="text-danger mb-4">Você tem certeza que deseja excluir este produto da loja?</h5>
+        
+        <div class="row">
+            <div class="col-md-3 text-center mb-3">
+                <img src="@Model.ImagemUrl" alt="@Model.Nome" class="img-fluid rounded" style="max-height: 150px;" />
+            </div>
+            <div class="col-md-9">
+                <dl class="row">
+                    <dt class="col-sm-3">Nome</dt>
+                    <dd class="col-sm-9">@Model.Nome</dd>
+
+                    <dt class="col-sm-3">Loja</dt>
+                    <dd class="col-sm-9">@Model.Loja</dd>
+
+                    <dt class="col-sm-3">Descrição</dt>
+                    <dd class="col-sm-9">@Model.Descricao</dd>
+                    
+                    <dt class="col-sm-3">Link</dt>
+                    <dd class="col-sm-9"><a href="@Model.LinkAfiliado" target="_blank">Testar Link</a></dd>
+                </dl>
+            </div>
+        </div>
+
+        <form asp-action="Delete" class="mt-4">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Sim, Excluir</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

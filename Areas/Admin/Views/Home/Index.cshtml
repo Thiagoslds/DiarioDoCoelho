@@ -6,6 +6,22 @@
 
 <h1 class="mb-4">Painel Administrativo</h1>
 
+@if (TempData["MensagemSucesso"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["MensagemSucesso"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["MensagemErro"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <div class="row g-3 mb-4">
     <div class="col-6 col-lg-3">
         <a asp-controller="Posts" asp-action="Index" class="text-decoration-none">
@@ -13,7 +29,7 @@
                 <div class="card-body">
                     <div class="admin-dashboard-icon bg-verde"><i class="fa-solid fa-newspaper"></i></div>
                     <div class="admin-dashboard-count">@Model.TotalPosts</div>
-                    <div class="text-muted">Notícias</div>
+                    <div class="text-muted">Artigos</div>
                 </div>
             </div>
         </a>
@@ -30,12 +46,12 @@
         </a>
     </div>
     <div class="col-6 col-lg-3">
-        <a asp-controller="Jogos" asp-action="Index" class="text-decoration-none">
+        <a asp-controller="ProdutosLoja" asp-action="Index" class="text-decoration-none">
             <div class="card admin-dashboard-card">
                 <div class="card-body">
-                    <div class="admin-dashboard-icon bg-vinho"><i class="fa-solid fa-futbol"></i></div>
-                    <div class="admin-dashboard-count">@Model.TotalJogos</div>
-                    <div class="text-muted">Jogos</div>
+                    <div class="admin-dashboard-icon bg-vinho"><i class="fa-solid fa-store"></i></div>
+                    <div class="admin-dashboard-count">@Model.TotalProdutos</div>
+                    <div class="text-muted">Loja</div>
                 </div>
             </div>
         </a>
@@ -58,9 +74,9 @@
         <div class="card admin-card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title mb-0"><i class="fa-solid fa-newspaper text-coelho-verde"></i> Últimas Notícias</h5>
+                    <h5 class="card-title mb-0"><i class="fa-solid fa-newspaper text-coelho-verde"></i> Últimos Artigos</h5>
                     <a asp-controller="Posts" asp-action="Create" class="btn btn-coelho-primary btn-sm">
-                        <i class="fa-solid fa-plus"></i> Nova Notícia
+                        <i class="fa-solid fa-plus"></i> Novo Artigo
                     </a>
                 </div>
                 @if (Model.UltimosPosts.Any())
@@ -82,43 +98,24 @@
                 }
                 else
                 {
-                    <p class="text-muted">Nenhuma notícia cadastrada ainda.</p>
+                    <p class="text-muted">Nenhum artigo cadastrado ainda.</p>
                 }
             </div>
         </div>
     </div>
 
     <div class="col-12 col-lg-5">
-        <div class="card admin-card mb-3">
-            <div class="card-body">
-                <h5 class="card-title mb-3"><i class="fa-solid fa-futbol text-coelho-verde"></i> Próximo Jogo</h5>
-                @if (Model.ProximoJogo is not null)
-                {
-                    var jogo = Model.ProximoJogo;
-                    <p class="mb-1 fw-bold">
-                        @(jogo.Mandante ? "América" : jogo.Adversario) x @(jogo.Mandante ? jogo.Adversario : "América")
-                    </p>
-                    <p class="text-muted small mb-2">@jogo.Campeonato — @jogo.DataHora.ToString("dd/MM/yyyy 'às' HH:mm")</p>
-                    <a asp-controller="Jogos" asp-action="Edit" asp-route-id="@jogo.Id" class="btn btn-sm btn-outline-secondary">
-                        <i class="fa-solid fa-pen"></i> Editar
-                    </a>
-                }
-                else
-                {
-                    <p class="text-muted mb-2">Nenhum próximo jogo cadastrado.</p>
-                    <a asp-controller="Jogos" asp-action="Create" class="btn btn-coelho-primary btn-sm">
-                        <i class="fa-solid fa-plus"></i> Cadastrar Jogo
-                    </a>
-                }
-            </div>
-        </div>
-
         <div class="card admin-card">
             <div class="card-body">
                 <h5 class="card-title mb-3"><i class="fa-solid fa-bolt text-coelho-verde"></i> Ações Rápidas</h5>
                 <div class="d-grid gap-2">
-                    <a asp-controller="Posts" asp-action="Create" class="btn btn-coelho-primary"><i class="fa-solid fa-plus"></i> Nova Notícia</a>
-                    <a asp-controller="Jogos" asp-action="Create" class="btn btn-outline-secondary"><i class="fa-solid fa-plus"></i> Novo Jogo</a>
+                    <form asp-action="AtualizarExtratores" method="post" class="d-grid gap-2 mb-2">
+                        <button type="submit" class="btn btn-success" onclick="this.innerHTML='<span class=\'spinner-border spinner-border-sm\' role=\'status\' aria-hidden=\'true\'></span> Atualizando...'; this.disabled=true; this.form.submit();">
+                            <i class="fa-solid fa-rotate"></i> Atualizar Extratores (Notícias e Tabelas)
+                        </button>
+                    </form>
+                    <a asp-controller="Posts" asp-action="Create" class="btn btn-coelho-primary"><i class="fa-solid fa-plus"></i> Novo Artigo</a>
+                    <a asp-controller="ProdutosLoja" asp-action="Create" class="btn btn-outline-secondary"><i class="fa-solid fa-plus"></i> Novo Produto (Loja)</a>
                     <a asp-controller="BannersAfiliados" asp-action="Create" class="btn btn-outline-secondary"><i class="fa-solid fa-plus"></i> Novo Banner</a>
                     <a asp-controller="Categorias" asp-action="Create" class="btn btn-outline-secondary"><i class="fa-solid fa-plus"></i> Nova Categoria</a>
                 </div>

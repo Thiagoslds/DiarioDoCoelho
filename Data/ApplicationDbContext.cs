@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using DiarioDoCoelho.Models;
 
@@ -10,6 +10,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Post> Posts => Set<Post>();
     public DbSet<Jogo> Jogos => Set<Jogo>();
     public DbSet<BannerAfiliado> BannersAfiliados => Set<BannerAfiliado>();
+    public DbSet<DadoExtraido> DadosExtraidos => Set<DadoExtraido>();
+    public DbSet<ProdutoLoja> ProdutosLoja => Set<ProdutoLoja>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

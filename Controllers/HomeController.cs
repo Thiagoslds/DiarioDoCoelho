@@ -15,11 +15,20 @@ public class HomeController(ApplicationDbContext context, ExtratorNoticiasServic
     private readonly ExtratorNoticiasService _extratorNoticias = extratorNoticias;
     private readonly ExtratorPartidasService _extratorPartidas = extratorPartidas;
 
+    public class PartidaContainer
+    {
+        public PartidaViewModel? Anterior { get; set; }
+        public PartidaViewModel? Proximo { get; set; }
+        public List<PartidaViewModel> ProximosJogos { get; set; } = new();
+        public List<PartidaViewModel> JogosAnteriores { get; set; } = new();
+    }
+
     public async Task<IActionResult> Index()
     {
+        // Artigos (antigas "Notícias Manuais")
         var ultimosPosts = await _context.Posts
             .Include(p => p.Categoria)
-            .Where(p => p.TipoPost == TipoPost.Noticia)
+            .Where(p => p.TipoPost == TipoPost.Artigo)
             .OrderByDescending(p => p.DataPublicacao)
             .Take(11)
             .ToListAsync();
@@ -27,53 +36,33 @@ public class HomeController(ApplicationDbContext context, ExtratorNoticiasServic
         var postDestaque = ultimosPosts.FirstOrDefault();
         var restantePosts = ultimosPosts.Skip(1).ToList();
 
-        // Você pode manter o GiroNoticias do seu banco ou removê-lo se as notícias externas forem substituí-lo
-        var giroNoticias = await _context.Posts
-            .Include(p => p.Categoria)
-            .Where(p => p.TipoPost == TipoPost.Noticia && p.FonteNoticiaUrl != null && p.FonteNoticiaUrl != "")
-            .OrderByDescending(p => p.DataPublicacao)
-            .Take(4)
-            .ToListAsync();
+        var artigos = ultimosPosts.Take(2).ToList(); // Podemos usar os mesmos para 'artigos' se necessário, ou deixar vazio se o layout mudou.
 
-        var artigos = await _context.Posts
-            .Include(p => p.Categoria)
-            .Where(p => p.TipoPost == TipoPost.Artigo)
-            .OrderByDescending(p => p.DataPublicacao)
-            .Take(2)
-            .ToListAsync();
+        // Leitura do banco de dados (JSON) para dados extraídos
+        var dbNoticias = await _context.DadosExtraidos.FirstOrDefaultAsync(d => d.Chave == "Noticias");
+        var noticiasExternas = dbNoticias != null ? System.Text.Json.JsonSerializer.Deserialize<List<NoticiaCoelho>>(dbNoticias.ConteudoJson, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new() : new();
 
-        var bauDoCoelho = await _context.Posts
-            .Include(p => p.Categoria)
-            .Where(p => p.TipoPost == TipoPost.Historia)
-            .OrderByDescending(p => p.DataPublicacao)
-            .Take(3)
-            .ToListAsync();
-
-        var jogosFuturos = await _context.Jogos
-            .Where(j => j.DataHora >= DateTime.Now)
-            .OrderBy(j => j.DataHora)
-            .ToListAsync();
-
-        var jogos = _extratorPartidas.ObterJogosAmerica();
+        var dbPartidas = await _context.DadosExtraidos.FirstOrDefaultAsync(d => d.Chave == "Partidas");
+        var jogosAnteriorProximo = dbPartidas != null ? System.Text.Json.JsonSerializer.Deserialize<PartidaContainer>(dbPartidas.ConteudoJson, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }) : null;
 
         var bannersAtivos = await _context.BannersAfiliados
             .Where(b => b.Ativo)
             .ToListAsync();
 
-        // 1. Chama o serviço de raspagem (execução síncrona, pois HtmlAgilityPack trabalha bem assim em operações simples)
-        var noticiasExternas = _extratorNoticias.ObterTodasNoticias();
+        var produtosLoja = await _context.ProdutosLoja
+            .Where(p => p.Ativo)
+            .ToListAsync();
 
         var viewModel = new HomeIndexViewModel
         {
             PostDestaque = postDestaque,
             UltimosPosts = restantePosts,
-            PartidaAnterior = jogos.Anterior,
-            ProximaPartida = jogos.Proximo,
+            PartidaAnterior = jogosAnteriorProximo?.Anterior,
+            ProximaPartida = jogosAnteriorProximo?.Proximo,
             BannersAtivos = bannersAtivos,
-            GiroNoticias = giroNoticias,
+            GiroNoticias = new List<Post>(), // Removido
             Artigos = artigos,
-            BauDoCoelho = bauDoCoelho,
-            ProdutosLoja = ProdutosAfiliadosMock.Produtos,
+            ProdutosLoja = produtosLoja,
 
             // 2. Passa as notícias raspadas para o ViewModel
             NoticiasExternas = noticiasExternas

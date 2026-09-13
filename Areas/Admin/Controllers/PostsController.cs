@@ -16,7 +16,9 @@ namespace DiarioDoCoelho.Areas.Admin.Controllers
         // GET: Admin/Posts
         public async Task<IActionResult> Index()
         {
-            var posts = _context.Posts.Include(p => p.Categoria).OrderByDescending(p => p.DataPublicacao);
+            var posts = _context.Posts.Include(p => p.Categoria)
+                                      .Where(p => p.TipoPost == TipoPost.Artigo)
+                                      .OrderByDescending(p => p.DataPublicacao);
             return View(await posts.ToListAsync());
         }
 
@@ -35,7 +37,7 @@ namespace DiarioDoCoelho.Areas.Admin.Controllers
         public IActionResult Create()
         {
             ViewData["CategoriaId"] = new SelectList(_context.Categorias.OrderBy(c => c.Nome), "Id", "Nome");
-            return View(new Post { DataPublicacao = DateTime.Now });
+            return View(new Post { DataPublicacao = DateTime.Now, TipoPost = TipoPost.Artigo });
         }
 
         // POST: Admin/Posts/Create
@@ -43,6 +45,8 @@ namespace DiarioDoCoelho.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Titulo,Resumo,Conteudo,DataPublicacao,Slug,ImagemCapa,CategoriaId,FonteNoticiaUrl,VideoEmbed,ProdutoAfiliadoUrl")] Post post)
         {
+            post.TipoPost = TipoPost.Artigo; // Forçar tipo Artigo
+            
             if (ModelState.IsValid)
             {
                 _context.Add(post);
@@ -71,6 +75,8 @@ namespace DiarioDoCoelho.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id,Titulo,Resumo,Conteudo,DataPublicacao,Slug,ImagemCapa,CategoriaId,FonteNoticiaUrl,VideoEmbed,ProdutoAfiliadoUrl")] Post post)
         {
             if (id != post.Id) return NotFound();
+
+            post.TipoPost = TipoPost.Artigo; // Forçar tipo Artigo
 
             if (ModelState.IsValid)
             {

@@ -11,8 +11,7 @@ namespace DiarioDoCoelho.ViewModels
         public List<BannerAfiliado> BannersAtivos { get; set; } = new();
         public List<Post> GiroNoticias { get; set; } = new();
         public List<Post> Artigos { get; set; } = new();
-        public List<Post> BauDoCoelho { get; set; } = new();
-        public List<ProdutoAfiliadoViewModel> ProdutosLoja { get; set; } = new();
+        public List<ProdutoLoja> ProdutosLoja { get; set; } = new();
         public List<NoticiaCoelho> NoticiasExternas { get; set; } = new List<NoticiaCoelho>();
     }
 }
