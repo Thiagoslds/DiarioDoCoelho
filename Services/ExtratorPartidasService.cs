@@ -1,104 +1,56 @@
-﻿using DiarioDoCoelho.ViewModels;
-using HtmlAgilityPack;
-using System.Text.RegularExpressions;
+using DiarioDoCoelho.ViewModels;
 
 namespace DiarioDoCoelho.Services
 {
     public class ExtratorPartidasService
     {
-        private readonly HtmlWeb _web;
-
-        public ExtratorPartidasService()
-        {
-            _web = new HtmlWeb();
-        }
-
-        // Retorna o anterior, o próximo, e uma lista com 3 jogos para a classificação
-        // Modifique a assinatura do método para retornar 4 elementos na Tupla
         public (PartidaViewModel? Anterior, PartidaViewModel? Proximo, List<PartidaViewModel> ProximosJogos, List<PartidaViewModel> JogosAnteriores) ObterJogosAmerica()
         {
-            var passados = new List<PartidaViewModel>();
-            var futuros = new List<PartidaViewModel>();
+            string campeonato = "Campeonato Brasileiro Série B";
 
-            try
+            // Repositório Estático baseado no PDF oficial
+            // Para atualizar o site, basta adicionar o número do placar dentro das aspas ""
+            var todosOsJogos = new List<PartidaViewModel>
             {
-                var document = _web.Load("https://www.ogol.com.br/equipe/america-mineiro");
-                var rows = document.DocumentNode.SelectNodes("//table[contains(@class, 'zztable stats')]/tbody/tr[contains(@class, 'parent')]");
+                // JOGOS PASSADOS
+                new PartidaViewModel { Campeonato = campeonato, DataHora = "05/09/2026 às 21:30", Mandante = "CRB", Visitante = "América", PlacarMandante = "3", PlacarVisitante = "1" },
+                new PartidaViewModel { Campeonato = campeonato, DataHora = "09/09/2026 às 20:30", Mandante = "América", Visitante = "Náutico", PlacarMandante = "2", PlacarVisitante = "1" },
+                new PartidaViewModel { Campeonato = campeonato, DataHora = "14/09/2026 às 19:30", Mandante = "América", Visitante = "São Bernardo FC", PlacarMandante = "0", PlacarVisitante = "2" },
 
-                if (rows != null)
-                {
-                    foreach (var row in rows)
-                    {
-                        var tds = row.SelectNodes("td");
-                        if (tds == null || tds.Count < 9) continue;
+                // JOGOS FUTUROS (Placar em branco)
+                new PartidaViewModel { Campeonato = campeonato, DataHora = "18/09/2026 às 19:30", Mandante = "Vila Nova", Visitante = "América", PlacarMandante = "", PlacarVisitante = "" },
+                new PartidaViewModel { Campeonato = campeonato, DataHora = "28/09/2026 às 19:30", Mandante = "América", Visitante = "Juventude", PlacarMandante = "", PlacarVisitante = "" },
+                new PartidaViewModel { Campeonato = campeonato, DataHora = "03/10/2026 às 16:00", Mandante = "Atlético-GO", Visitante = "América", PlacarMandante = "", PlacarVisitante = "" },
+                new PartidaViewModel { Campeonato = campeonato, DataHora = "07/10/2026 às 20:30", Mandante = "América", Visitante = "Fortaleza", PlacarMandante = "", PlacarVisitante = "" }
+            };
 
-                        string dataUrl = tds[1].SelectSingleNode(".//a")?.GetAttributeValue("href", "") ?? "";
-                        string dataRaw = tds[1].InnerText.Trim(); // <-- AQUI ESTÁ A CORREÇÃO!
-                        string hora = tds[2].InnerText.Trim();
-                        string campeonato = tds[3].InnerText.Trim();
-                        string mandante = tds[4].InnerText.Trim();
-                        string resultado = tds[6].InnerText.Trim();
-                        string visitante = tds[8].InnerText.Trim();
-
-                        campeonato = Regex.Replace(campeonato, @"\r\n?|\n", "").Trim();
-
-                        // Usa a data raw (ex: "28/09") como plano B caso a URL falhe
-                        string dataFormatada = dataRaw;
-
-                        var matchData = Regex.Match(dataUrl, @"\/jogo\/(\d{4})-(\d{2})-(\d{2})");
-                        if (matchData.Success)
-                        {
-                            dataFormatada = $"{matchData.Groups[3].Value}/{matchData.Groups[2].Value}/{matchData.Groups[1].Value}";
-                        }
-
-                        // SUBSTITUIÇÃO DO NOME DO AMÉRICA
-                        mandante = mandante.Replace("América Mineiro", "América");
-                        visitante = visitante.Replace("América Mineiro", "América");
-
-                        string escudoMandanteOgol = "https://www.ogol.com.br" + tds[5].SelectSingleNode(".//img")?.GetAttributeValue("src", "");
-                        string escudoVisitanteOgol = "https://www.ogol.com.br" + tds[7].SelectSingleNode(".//img")?.GetAttributeValue("src", "");
-
-                        var partidaInfo = new PartidaViewModel
-                        {
-                            Campeonato = campeonato,
-                            Mandante = mandante,
-                            EscudoMandante = ObterCaminhoEscudo(mandante),
-                            EscudoFallbackMandante = string.IsNullOrEmpty(escudoMandanteOgol) ? GerarFallbackAvatar(mandante) : escudoMandanteOgol,
-                            Visitante = visitante,
-                            EscudoVisitante = ObterCaminhoEscudo(visitante),
-                            EscudoFallbackVisitante = string.IsNullOrEmpty(escudoVisitanteOgol) ? GerarFallbackAvatar(visitante) : escudoVisitanteOgol,
-                            DataHora = $"{dataFormatada} às {hora}"
-                        };
-
-                        var matchPlacar = Regex.Match(resultado, @"(\d+)\s*-\s*(\d+)");
-                        if (matchPlacar.Success)
-                        {
-                            partidaInfo.PlacarMandante = matchPlacar.Groups[1].Value;
-                            partidaInfo.PlacarVisitante = matchPlacar.Groups[2].Value;
-                            passados.Add(partidaInfo);
-                        }
-                        else
-                        {
-                            futuros.Add(partidaInfo);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
+            // Processamento automático de Escudos
+            foreach (var jogo in todosOsJogos)
             {
-                Console.WriteLine($"Erro ao extrair partidas do América: {ex.Message}");
+                jogo.EscudoMandante = ObterCaminhoEscudo(jogo.Mandante);
+                jogo.EscudoFallbackMandante = GerarFallbackAvatar(jogo.Mandante);
+
+                jogo.EscudoVisitante = ObterCaminhoEscudo(jogo.Visitante);
+                jogo.EscudoFallbackVisitante = GerarFallbackAvatar(jogo.Visitante);
             }
 
-            futuros.Reverse();
+            // A Mágica: Separa sozinho o que é passado (tem placar) do que é futuro (não tem)
+            var passados = todosOsJogos.Where(j => !string.IsNullOrEmpty(j.PlacarMandante)).ToList();
+            var futuros = todosOsJogos.Where(j => string.IsNullOrEmpty(j.PlacarMandante)).ToList();
 
+            // O jogo anterior é o último da lista de passados
+            var anterior = passados.LastOrDefault();
+
+            // O próximo jogo é o primeiro da lista de futuros
             var proximo = futuros.FirstOrDefault();
-            var anterior = passados.FirstOrDefault();
 
-            // PEGA OS 3 PRÓXIMOS E OS 3 ÚLTIMOS
-            var lista3Proximos = futuros.Take(3).ToList();
-            var lista3Anteriores = passados.Take(3).ToList();
+            // Pega os 3 jogos para a tela de Tabelas
+            var proximosJogos = futuros.Take(3).ToList();
 
-            return (anterior, proximo, lista3Proximos, lista3Anteriores);
+            // Inverte a lista de passados para mostrar do mais recente pro mais antigo (14/09 -> 09/09 -> 05/09)
+            var jogosAnteriores = passados.AsEnumerable().Reverse().Take(3).ToList();
+
+            return (anterior, proximo, proximosJogos, jogosAnteriores);
         }
 
         private string ObterCaminhoEscudo(string nomeTime)
@@ -109,13 +61,12 @@ namespace DiarioDoCoelho.Services
                 .Replace("ç", "c").Trim();
 
             if (nomeNormalizado.Contains("america")) return "/img/afc-escudos-site-branco-1.png";
-            if (nomeNormalizado.Contains("cruzeiro")) return "/img/cruzeiro_1.png";
 
             var mapaTimes = new Dictionary<string, string>
             {
                 { "athletic", "athletic" },
-                { "atletico", "atletico-mineiro" },
-                { "avai", "avai" },
+                { "atletico-go", "atletico-goianiense" },
+                { "atletico goianiense", "atletico-goianiense" },
                 { "botafogo", "botafogo-sp" },
                 { "ceara", "ceara" },
                 { "crb", "crb" },
@@ -145,7 +96,7 @@ namespace DiarioDoCoelho.Services
 
         private string GerarFallbackAvatar(string nomeTime)
         {
-            if (nomeTime.Contains("América")) return "/img/afc-escudos-site-branco-1.png";
+            if (nomeTime == "América") return "/img/afc-escudos-site-branco-1.png";
             return $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(nomeTime)}&background=e6f2e6&color=009e4f&rounded=true&bold=true";
         }
     }

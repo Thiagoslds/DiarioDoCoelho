@@ -17,7 +17,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ExtratorNoticiasService>();
 builder.Services.AddScoped<ExtratorClassificacaoService>();
 builder.Services.AddScoped<ExtratorPartidasService>();
-builder.Services.AddScoped<ExtratorSub20Service>();
+builder.Services.AddScoped<ExtratorDnaFormadorService>();
 
 var app = builder.Build();
 
@@ -58,7 +58,7 @@ using (var scope = app.Services.CreateScope())
 {
     try
     {
-        await DiarioDoCoelho.Data.SeedData.InitializeAsync(scope.ServiceProvider);
+        await DiarioDoCoelho.Data.SeedData.InitializeAsync(scope.ServiceProvider, app.Environment);
     }
     catch (Exception ex)
     {

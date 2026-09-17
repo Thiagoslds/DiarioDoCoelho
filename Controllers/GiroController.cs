@@ -32,6 +32,8 @@ public class GiroController(ApplicationDbContext context, ExtratorNoticiasServic
             return NotFound();
         }
 
+        var produtos = await _context.ProdutosLoja.Where(p => p.Ativo).Take(4).ToListAsync();
+
         var viewModel = new GiroLerViewModel
         {
             Titulo = post.Titulo,
@@ -39,7 +41,7 @@ public class GiroController(ApplicationDbContext context, ExtratorNoticiasServic
             FonteNoticiaUrl = post.FonteNoticiaUrl,
             CategoriaNome = post.Categoria?.Nome,
             DataExtracao = post.DataPublicacao,
-            ProdutosLoja = ProdutosAfiliadosMock.Produtos.Take(4).ToList()
+            ProdutosLoja = produtos
         };
 
         return View(viewModel);
@@ -47,7 +49,7 @@ public class GiroController(ApplicationDbContext context, ExtratorNoticiasServic
 
     // GET: /Giro/Externa?url=...&titulo=...&imagem=...&fonte=...&subtexto=...&data=...
     [Route("Giro/Externa")]
-    public IActionResult Externa(string url, string titulo, string? imagem, string? fonte, string? subtexto, DateTime? data)
+    public async Task<IActionResult> Externa(string url, string titulo, string? imagem, string? fonte, string? subtexto, DateTime? data)
     {
         if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(titulo))
         {
@@ -59,6 +61,8 @@ public class GiroController(ApplicationDbContext context, ExtratorNoticiasServic
             .Take(3)
             .ToList();
 
+        var produtos = await _context.ProdutosLoja.Where(p => p.Ativo).Take(4).ToListAsync();
+
         var viewModel = new GiroLerViewModel
         {
             Titulo = titulo,
@@ -67,7 +71,7 @@ public class GiroController(ApplicationDbContext context, ExtratorNoticiasServic
             FonteNoticiaUrl = url,
             CategoriaNome = fonte,
             DataExtracao = data,
-            ProdutosLoja = ProdutosAfiliadosMock.Produtos.Take(4).ToList(),
+            ProdutosLoja = produtos,
             NoticiasRelacionadas = noticiasRelacionadas
         };
 

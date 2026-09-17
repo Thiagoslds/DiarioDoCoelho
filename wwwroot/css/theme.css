@@ -378,6 +378,33 @@ a {
     }
 
 /* =====================
+   Conteúdo do Post
+   ===================== */
+.post-conteudo {
+    line-height: 1.8;
+    font-size: 1.125rem;
+    color: #2c3e50; /* Um pouco mais suave que preto puro para leitura longa */
+    white-space: pre-wrap; /* Respeita as quebras de linha digitadas no painel */
+}
+
+    .post-conteudo p {
+        margin-bottom: 1.5rem;
+    }
+    
+    .post-conteudo img {
+        max-width: 100%;
+        height: auto;
+        border-radius: var(--coelho-radius-sm);
+        margin: 1.5rem 0;
+    }
+
+    .post-conteudo h2, .post-conteudo h3 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        color: var(--coelho-verde);
+    }
+
+/* =====================
    Próximo Jogo
    ===================== */
 .coelho-proximo-jogo {

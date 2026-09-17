@@ -37,30 +37,60 @@ namespace DiarioDoCoelho.Areas.Admin.Controllers
             [FromServices] ExtratorNoticiasService extratorNoticias,
             [FromServices] DiarioDoCoelho.Services.ExtratorPartidasService extratorPartidas,
             [FromServices] DiarioDoCoelho.Services.ExtratorClassificacaoService extratorClassificacao,
-            [FromServices] DiarioDoCoelho.Services.ExtratorSub20Service extratorSub20)
+            [FromServices] DiarioDoCoelho.Services.ExtratorDnaFormadorService extratorDnaFormador)
         {
+            var mensagensErro = new List<string>();
+            var dadosParaSalvar = new Dictionary<string, object>();
+
             try
             {
-                // Extração
                 var noticias = extratorNoticias.ObterTodasNoticias();
+                dadosParaSalvar.Add("Noticias", noticias);
+            }
+            catch (Exception ex) { mensagensErro.Add("Notícias: " + ex.Message); }
+
+            try
+            {
                 var partidas = extratorPartidas.ObterJogosAmerica();
+                dadosParaSalvar.Add("Partidas", new { 
+                    Anterior = partidas.Anterior, 
+                    Proximo = partidas.Proximo, 
+                    ProximosJogos = partidas.ProximosJogos, 
+                    JogosAnteriores = partidas.JogosAnteriores 
+                });
+            }
+            catch (Exception ex) { mensagensErro.Add("Partidas: " + ex.Message); }
+
+            try
+            {
                 var classificacaoGeral = extratorClassificacao.ObterClassificacao();
-                var classificacaoSub20 = extratorSub20.ObterClassificacaoSub20();
+                dadosParaSalvar.Add("ClassificacaoGeral", classificacaoGeral);
+            }
+            catch (Exception ex) { mensagensErro.Add("Classificação Geral: " + ex.Message); }
 
-                // Dicionário com Chave -> Objeto extraído
-                var dadosParaSalvar = new Dictionary<string, object>
-                {
-                    { "Noticias", noticias },
-                    { "Partidas", new { 
-                        Anterior = partidas.Anterior, 
-                        Proximo = partidas.Proximo, 
-                        ProximosJogos = partidas.ProximosJogos, 
-                        JogosAnteriores = partidas.JogosAnteriores 
-                    } },
-                    { "ClassificacaoGeral", classificacaoGeral },
-                    { "ClassificacaoSub20", classificacaoSub20 }
-                };
+            try
+            {
+                var classificacaoSub20 = extratorDnaFormador.ObterClassificacaoSub20();
+                dadosParaSalvar.Add("ClassificacaoSub20", classificacaoSub20);
+            }
+            catch (Exception ex) { mensagensErro.Add("Classificação Mineiro Sub-20: " + ex.Message); }
 
+            try
+            {
+                var classificacaoMineiroSub17 = extratorDnaFormador.ObterClassificacaoMineiroSub17();
+                dadosParaSalvar.Add("ClassificacaoMineiroSub17", classificacaoMineiroSub17);
+            }
+            catch (Exception ex) { mensagensErro.Add("Classificação Mineiro Sub-17: " + ex.Message); }
+
+            try
+            {
+                var classificacaoBrasileiroSub17 = extratorDnaFormador.ObterClassificacaoBrasileiroSub17();
+                dadosParaSalvar.Add("ClassificacaoBrasileiroSub17", classificacaoBrasileiroSub17);
+            }
+            catch (Exception ex) { mensagensErro.Add("Classificação Brasileiro Sub-17: " + ex.Message); }
+
+            try
+            {
                 foreach (var (chave, objeto) in dadosParaSalvar)
                 {
                     var json = System.Text.Json.JsonSerializer.Serialize(objeto);
@@ -83,11 +113,19 @@ namespace DiarioDoCoelho.Areas.Admin.Controllers
                 }
 
                 await _context.SaveChangesAsync();
-                TempData["MensagemSucesso"] = "Dados dos extratores atualizados com sucesso!";
+
+                if (mensagensErro.Any())
+                {
+                    TempData["MensagemErro"] = "Atualização parcial. Erros: " + string.Join(" | ", mensagensErro);
+                }
+                else
+                {
+                    TempData["MensagemSucesso"] = "Dados dos extratores atualizados com sucesso!";
+                }
             }
             catch (Exception ex)
             {
-                TempData["MensagemErro"] = $"Erro ao atualizar extratores: {ex.Message}";
+                TempData["MensagemErro"] = $"Erro fatal ao salvar extratores: {ex.Message}";
             }
 
             return RedirectToAction(nameof(Index));

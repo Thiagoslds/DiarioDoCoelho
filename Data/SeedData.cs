@@ -11,7 +11,7 @@ namespace DiarioDoCoelho.Data;
 /// </summary>
 public static class SeedData
 {
-    public static async Task InitializeAsync(IServiceProvider serviceProvider)
+    public static async Task InitializeAsync(IServiceProvider serviceProvider, IWebHostEnvironment env)
     {
         var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
         await context.Database.MigrateAsync();
@@ -40,8 +40,11 @@ public static class SeedData
             }
         }
 
-        await SeedNoticiasFicticiasAsync(context);
-        await SeedProximoJogoFicticioAsync(context);
+        if (env.IsDevelopment())
+        {
+            await SeedNoticiasFicticiasAsync(context);
+            await SeedProximoJogoFicticioAsync(context);
+        }
     }
 
     /// <summary>

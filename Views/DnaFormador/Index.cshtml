@@ -28,7 +28,6 @@
     </div>
 
     <!-- Bloco de Jogos: Última e Próxima Partida -->
-    <!-- Bloco de Jogos: Última e Próxima Partida -->
     @if (Model.PartidaAnterior != null || Model.ProximaPartida != null)
     {
       <h3 class="text-coelho-verde mb-3 mt-5"><i class="fa-solid fa-calendar-days"></i> Calendário Sub-20</h3>
@@ -89,51 +88,182 @@
         </div>
       </div>
     }
-    <!-- Classificação Sub-20 -->
-    @if (Model.Classificacao.Any())
-    {
-      <h3 class="text-coelho-verde mb-3"><i class="fa-solid fa-list-ol"></i> Classificação do Campeonato</h3>
-      <div class="table-responsive mb-5 shadow-sm">
-        <table class="tabela-classificacao">
-          <thead>
-            <tr>
-              <th style="width: 50px;">POS</th>
-              <th style="text-align: left;">TIME</th>
-              <th>P</th>
-              <th>J</th>
-              <th>V</th>
-              <th>E</th>
-              <th>D</th>
-              <th>GP</th>
-              <th>GC</th>
-              <th>SG</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach (var item in Model.Classificacao)
-            {
-              var classeDestaque = item.Time.NomePopular.Contains("América") ? "time-destaque" : "";
-
-              <tr class="@classeDestaque">
-                <td class="col-posicao">@item.Posicao</td>
-                <td class="col-time">
-                  <img src="@item.Time.Escudo" alt="@item.Time.NomePopular" class="escudo-time" loading="lazy" />
-                  <span>@item.Time.NomePopular</span>
-                </td>
-                <td style="font-weight: bold;">@item.Pontos</td>
-                <td>@item.Jogos</td>
-                <td>@item.Vitorias</td>
-                <td>@item.Empates</td>
-                <td>@item.Derrotas</td>
-                <td>@item.GolsPro</td>
-                <td>@item.GolsContra</td>
-                <td>@item.SaldoGols</td>
-              </tr>
-            }
-          </tbody>
-        </table>
+    <!-- Classificações (Carrossel) -->
+    <div id="carouselClassificacao" class="carousel slide mb-5" data-bs-ride="false" style="padding-bottom: 40px;">
+      <!-- Indicadores / Abas inferiores -->
+      <div class="carousel-indicators" style="bottom: 0px;">
+        <button type="button" data-bs-target="#carouselClassificacao" data-bs-slide-to="0" class="active bg-success" aria-current="true" aria-label="Mineiro Sub-20"></button>
+        <button type="button" data-bs-target="#carouselClassificacao" data-bs-slide-to="1" class="bg-success" aria-label="Mineiro Sub-17"></button>
+        <button type="button" data-bs-target="#carouselClassificacao" data-bs-slide-to="2" class="bg-success" aria-label="Brasileiro Sub-17"></button>
       </div>
-    }
+
+      <div class="carousel-inner shadow-sm rounded bg-white">
+        
+        <!-- Slide 1: Mineiro Sub-20 -->
+        <div class="carousel-item active p-3 p-md-4">
+          <h3 class="text-coelho-verde mb-4 text-center"><i class="fa-solid fa-list-ol"></i> Campeonato Mineiro Sub-20</h3>
+          @if (Model.ClassificacaoMineiroSub20.Any())
+          {
+            <div class="table-responsive">
+              <table class="tabela-classificacao w-100">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">POS</th>
+                    <th style="text-align: left;">TIME</th>
+                    <th>P</th>
+                    <th>J</th>
+                    <th>V</th>
+                    <th>E</th>
+                    <th>D</th>
+                    <th>GP</th>
+                    <th>GC</th>
+                    <th>SG</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach (var item in Model.ClassificacaoMineiroSub20)
+                  {
+                    var classeDestaque = item.Time.NomePopular.Contains("América") ? "time-destaque" : "";
+                    <tr class="@classeDestaque">
+                      <td class="col-posicao">@item.Posicao</td>
+                      <td class="col-time">
+                        <img src="@item.Time.Escudo" alt="@item.Time.NomePopular" class="escudo-time" loading="lazy" />
+                        <span>@item.Time.NomePopular</span>
+                      </td>
+                      <td style="font-weight: bold;">@item.Pontos</td>
+                      <td>@item.Jogos</td>
+                      <td>@item.Vitorias</td>
+                      <td>@item.Empates</td>
+                      <td>@item.Derrotas</td>
+                      <td>@item.GolsPro</td>
+                      <td>@item.GolsContra</td>
+                      <td>@item.SaldoGols</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+          else
+          {
+            <p class="text-center text-muted my-4">Classificação indisponível no momento.</p>
+          }
+        </div>
+
+        <!-- Slide 2: Mineiro Sub-17 -->
+        <div class="carousel-item p-3 p-md-4">
+          <h3 class="text-coelho-verde mb-4 text-center"><i class="fa-solid fa-list-ol"></i> Campeonato Mineiro Sub-17</h3>
+          @if (Model.ClassificacaoMineiroSub17.Any())
+          {
+            <div class="table-responsive">
+              <table class="tabela-classificacao w-100">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">POS</th>
+                    <th style="text-align: left;">TIME</th>
+                    <th>P</th>
+                    <th>J</th>
+                    <th>V</th>
+                    <th>E</th>
+                    <th>D</th>
+                    <th>GP</th>
+                    <th>GC</th>
+                    <th>SG</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach (var item in Model.ClassificacaoMineiroSub17)
+                  {
+                    var classeDestaque = item.Time.NomePopular.Contains("América") ? "time-destaque" : "";
+                    <tr class="@classeDestaque">
+                      <td class="col-posicao">@item.Posicao</td>
+                      <td class="col-time">
+                        <img src="@item.Time.Escudo" alt="@item.Time.NomePopular" class="escudo-time" loading="lazy" />
+                        <span>@item.Time.NomePopular</span>
+                      </td>
+                      <td style="font-weight: bold;">@item.Pontos</td>
+                      <td>@item.Jogos</td>
+                      <td>@item.Vitorias</td>
+                      <td>@item.Empates</td>
+                      <td>@item.Derrotas</td>
+                      <td>@item.GolsPro</td>
+                      <td>@item.GolsContra</td>
+                      <td>@item.SaldoGols</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+          else
+          {
+            <p class="text-center text-muted my-4">Classificação indisponível no momento.</p>
+          }
+        </div>
+
+        <!-- Slide 3: Brasileiro Sub-17 -->
+        <div class="carousel-item p-3 p-md-4">
+          <h3 class="text-coelho-verde mb-4 text-center"><i class="fa-solid fa-list-ol"></i> Campeonato Brasileiro Sub-17</h3>
+          @if (Model.ClassificacaoBrasileiroSub17.Any())
+          {
+            <div class="table-responsive">
+              <table class="tabela-classificacao w-100">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">POS</th>
+                    <th style="text-align: left;">TIME</th>
+                    <th>P</th>
+                    <th>J</th>
+                    <th>V</th>
+                    <th>E</th>
+                    <th>D</th>
+                    <th>GP</th>
+                    <th>GC</th>
+                    <th>SG</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach (var item in Model.ClassificacaoBrasileiroSub17)
+                  {
+                    var classeDestaque = item.Time.NomePopular.Contains("América") ? "time-destaque" : "";
+                    <tr class="@classeDestaque">
+                      <td class="col-posicao">@item.Posicao</td>
+                      <td class="col-time">
+                        <img src="@item.Time.Escudo" alt="@item.Time.NomePopular" class="escudo-time" loading="lazy" />
+                        <span>@item.Time.NomePopular</span>
+                      </td>
+                      <td style="font-weight: bold;">@item.Pontos</td>
+                      <td>@item.Jogos</td>
+                      <td>@item.Vitorias</td>
+                      <td>@item.Empates</td>
+                      <td>@item.Derrotas</td>
+                      <td>@item.GolsPro</td>
+                      <td>@item.GolsContra</td>
+                      <td>@item.SaldoGols</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+          else
+          {
+            <p class="text-center text-muted my-4">Classificação indisponível no momento.</p>
+          }
+        </div>
+
+      </div>
+
+      <!-- Setas do Carrossel com estilo personalizado para aparecerem fora/escuras -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselClassificacao" data-bs-slide="prev" style="width: 40px; justify-content: flex-start; margin-left: -20px; filter: invert(1) grayscale(100); opacity: 0.8;">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselClassificacao" data-bs-slide="next" style="width: 40px; justify-content: flex-end; margin-right: -20px; filter: invert(1) grayscale(100); opacity: 0.8;">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Próximo</span>
+      </button>
+    </div>
 
     <a asp-controller="Home" asp-action="Index" class="d-inline-block mb-4 small text-coelho-verde text-decoration-none fw-semibold">
       &larr; Voltar para a Home

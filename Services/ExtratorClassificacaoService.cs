@@ -1,4 +1,4 @@
-﻿using HtmlAgilityPack;
+using HtmlAgilityPack;
 using DiarioDoCoelho.ViewModels;
 
 namespace DiarioDoCoelho.Services
@@ -9,7 +9,10 @@ namespace DiarioDoCoelho.Services
 
         public ExtratorClassificacaoService()
         {
-            _web = new HtmlWeb();
+            _web = new HtmlWeb
+            {
+                UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+            };
         }
 
         public List<ClassificacaoViewModel> ObterClassificacao()
@@ -32,7 +35,6 @@ namespace DiarioDoCoelho.Services
                         var tds = row.SelectNodes("td");
                         if (tds == null || tds.Count < 13) continue;
 
-                        // 1. Posição, Nome e ID do Time (Primeira coluna)
                         var posNode = tds[0].SelectSingleNode(".//strong[contains(@class, 'styles_position')]");
                         var nomeNode = tds[0].SelectSingleNode(".//strong[contains(@class, 'styles_teamName')]");
                         var linkNode = tds[0].SelectSingleNode(".//a");
@@ -44,34 +46,26 @@ namespace DiarioDoCoelho.Services
                         {
                             var href = linkNode.GetAttributeValue("href", "");
                             var partesUrl = href.Split('/');
-
-                            // O ID do time fica sempre no final da URL da CBF
                             if (partesUrl.Length > 0 && int.TryParse(partesUrl.Last(), out int extractedId))
                             {
                                 timeId = extractedId;
-                                // Reconstrói a URL limpa do escudo usando o servidor de conteúdo da CBF
                                 escudoUrl = $"https://conteudo.cbf.com.br/clubes/{timeId}/escudo.jpg";
                             }
                         }
 
-                        // 2. Últimos Jogos (Última coluna de dados antes de "Próximo")
                         var ultimosJogos = new List<string>();
                         var svgNodes = tds[12].SelectNodes(".//svg/circle");
-
                         if (svgNodes != null)
                         {
                             foreach (var circle in svgNodes)
                             {
                                 var fill = circle.GetAttributeValue("fill", "").ToUpper();
-
-                                // Mapeamento das cores da CBF para as letras da View
                                 if (fill == "#24C796") ultimosJogos.Add("v");
                                 else if (fill == "#B7B7B7") ultimosJogos.Add("e");
                                 else if (fill == "#EE2D44") ultimosJogos.Add("d");
                             }
                         }
 
-                        // 3. Montagem do ViewModel
                         var item = new ClassificacaoViewModel
                         {
                             Posicao = int.TryParse(posNode?.InnerText.Trim(), out int pos) ? pos : 0,
@@ -83,7 +77,6 @@ namespace DiarioDoCoelho.Services
                             GolsPro = int.TryParse(tds[6].InnerText.Trim(), out int gp) ? gp : 0,
                             GolsContra = int.TryParse(tds[7].InnerText.Trim(), out int gc) ? gc : 0,
                             SaldoGols = int.TryParse(tds[8].InnerText.Trim(), out int sg) ? sg : 0,
-                            // As colunas 9 (CA) e 10 (CV) da CBF são ignoradas; o aproveitamento está na coluna 11
                             Aproveitamento = double.TryParse(tds[11].InnerText.Trim(), out double apv) ? apv : 0,
                             UltimosJogos = ultimosJogos,
                             Time = new TimeInfo
@@ -97,10 +90,21 @@ namespace DiarioDoCoelho.Services
                         classificacao.Add(item);
                     }
                 }
+                else
+                {
+                    var title = document.DocumentNode.SelectSingleNode("//title")?.InnerText;
+                    throw new Exception($"Tabela não encontrada. A página pode ter bloqueado o acesso. Título da página retornada: {title}");
+                }
+                
+                if (!classificacao.Any())
+                {
+                    throw new Exception("A tabela foi encontrada, mas nenhum dado foi extraído. Possível mudança na estrutura da página.");
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Erro ao extrair classificação: {ex.Message}");
+                throw; // Repassa a exceção para o Admin HomeController capturar
             }
 
             return classificacao;

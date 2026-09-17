@@ -1,8 +1,15 @@
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Hosting
+@inject IWebHostEnvironment Env
+
 @{
     var tamanho = ViewData["Tamanho"] as string ?? "Retângulo Médio (300x250)";
 }
 
-<div class="coelho-adsense-slot" aria-hidden="true">
-    <span class="coelho-adsense-label">Publicidade</span>
-    <span class="coelho-adsense-tag"><i class="fa-solid fa-rectangle-ad"></i> Anúncio Google AdSense — @tamanho</span>
-</div>
+@if (Env.IsDevelopment())
+{
+    <div class="coelho-adsense-slot" aria-hidden="true">
+        <span class="coelho-adsense-label">Publicidade</span>
+        <span class="coelho-adsense-tag"><i class="fa-solid fa-rectangle-ad"></i> Anúncio Google AdSense — @tamanho</span>
+    </div>
+}

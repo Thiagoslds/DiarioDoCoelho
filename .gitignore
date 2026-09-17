@@ -53,11 +53,16 @@ artifacts/
 
 # Publish output
 [Pp]ublish/
+publish_*/
 *.Publish.xml
 *.pubxml
 *.pubxml.user
 *.azurePubxml
 PublishScripts/
+
+# Arquivos empacotados (zips de deploy)
+*.zip
+*.rar
 
 # Entity Framework / Database (local, sensível)
 *.mdf
